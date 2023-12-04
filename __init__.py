@@ -1,7 +1,3 @@
-from .nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
-
-__all__ =["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
-
 # scavenged install sequence from https://github.com/FizzleDorf/ComfyUI_FizzNodes/blob/main/__init__.py
 def is_installed(package, package_overwrite=None):
     try:
@@ -22,3 +18,7 @@ def is_installed(package, package_overwrite=None):
 
 # to do: read from requirements.txt
 is_installed("keyframed")
+
+from .nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
+
+__all__ =["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
