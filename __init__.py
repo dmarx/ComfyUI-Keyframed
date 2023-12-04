@@ -1,6 +1,7 @@
 import os
 import subprocess
 import importlib.util
+import sys
 
 # scavenged install sequence from https://github.com/FizzleDorf/ComfyUI_FizzNodes/blob/main/__init__.py
 def is_installed(package, package_overwrite=None):
@@ -11,6 +12,7 @@ def is_installed(package, package_overwrite=None):
 
     package = package_overwrite or package
 
+    python = sys.executable
     if spec is None:
         print(f"Installing {package}...")
         command = f'"{python}" -m pip install {package}'
