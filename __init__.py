@@ -1,3 +1,7 @@
+import os
+import subprocess
+import importlib.util
+
 # scavenged install sequence from https://github.com/FizzleDorf/ComfyUI_FizzNodes/blob/main/__init__.py
 def is_installed(package, package_overwrite=None):
     try:
