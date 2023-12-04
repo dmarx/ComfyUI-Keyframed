@@ -3,11 +3,9 @@ from keyframed.dsl import curve_from_cn_string
 
 CATEGORY = "keyframed"
 
-class _BASE:
+class KfCurveFromString:
     CATEGORY=CATEGORY
     FUNCTION = 'main'
-
-class KfCurveFromString(_BASE):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)
     
     @classmethod
@@ -23,7 +21,9 @@ class KfCurveFromString(_BASE):
     def main(self, chigozie_string):
         return curve_from_cn_string(chigozie_string)
 
-class KfCurveFromYAML(_BASE):
+class KfCurveFromYAML:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
     RETURN_TYPES = ("KEYFRAMED_CURVE",)
     
     @classmethod
@@ -48,20 +48,22 @@ label: foo"""
     def main(self, yaml):
         return kf.serialization.from_yaml(yaml)
     
-class KfEvaluateCurveAtT(_BASE):
+class KfEvaluateCurveAtT:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
     RETURN_TYPES = ("FLOAT","INT")
 
     @classmethod
     def INPUT_TYPES(s):
         return {
             "required": {
-                "curve": ("KEYFRAMED_CURVE",),
-                "t": ("INT",)
+                "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "t": ("INT",{"default":0})
             },
         }
 
     def main(self, curve, t):
-        return curve[t]
+        return curve[t], int(curve[t])
 
 NODE_CLASS_MAPPINGS = {
     "KfCurveFromString": KfCurveFromString,
@@ -73,5 +75,5 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KfCurveFromString": "Curve From String",
     "KfCurveFromYAML": "Curve From YAML",
-    "KfEvaluateCurveAtT": "Evaluate Curve At T",
+    "KfEvaluateCurveAtT": "EvaluateCurveAtT",
 }
