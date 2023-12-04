@@ -1,2 +1,3 @@
 # ComfyUI-Keyframed
-[Work In Progress] ComfyUI nodes to facilitate value keyframing
+
+🚧 Work In Progress 🚧 - ComfyUI nodes to facilitate value keyframing
