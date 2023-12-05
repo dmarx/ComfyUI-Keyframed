@@ -57,6 +57,7 @@ def _inspect(item, depth=0):
 class KfDebug_Passthrough:
     CATEGORY=CATEGORY
     FUNCTION = 'main'
+    OUTPUT_NODE=True
 
     _FORCED_INPUT = {"label": ("STRING", {
                     "multiline": True, #True if you want the field to look like the one on the ClipTextEncode node
@@ -79,73 +80,69 @@ class KfDebug_Passthrough:
         return (item,) # pretty sure it's gotta be a tuple?
 
 
-class KfDebug_DummyOutput(KfDebug_Passthrough):
-    OUTPUT_NODE=True
-    _FORCED_INPUT = {"label": ("STRING", {
-                    "multiline": True, #True if you want the field to look like the one on the ClipTextEncode node
-                    "default": "dummy output"})}
+# class KfDebug_DummyOutput(KfDebug_Passthrough):
+#     OUTPUT_NODE=True
+#     _FORCED_INPUT = {"label": ("STRING", {
+#                     "multiline": True, #True if you want the field to look like the one on the ClipTextEncode node
+#                     "default": "dummy output"})}
 
 ###########################
 
+### Built-in Types
+
+
 # there should be a way to create a type-agnostic passthrough node
 
-class KfDebug_Float(KfDebug_Passthrough):
-    RETURN_TYPES = ("FLOAT",)
+class KfDebug_Clip(KfDebug_Passthrough):
+    RETURN_TYPES = ("CLIP",)
 
 
 class KfDebug_Cond(KfDebug_Passthrough):
     RETURN_TYPES = ("CONDITIONING",)
 
 
-class KfDebug_Curve(KfDebug_Passthrough):
-    RETURN_TYPES = ("KEYFRAMED_CURVE",)
-
-
-class KfDebug_Latent(KfDebug_Passthrough):
-    RETURN_TYPES = ("LATENT",)
-
-
-# Some types (string): "MODEL", "VAE", "CLIP", "IMAGE", "INT", "STRING"
-class KfDebug_Model(KfDebug_Passthrough):
-    RETURN_TYPES = ("MODEL",)
-
-
-class KfDebug_Vae(KfDebug_Passthrough):
-    RETURN_TYPES = ("VAE",)
-
-
-class KfDebug_Clip(KfDebug_Passthrough):
-    RETURN_TYPES = ("Clip",)
+class KfDebug_Float(KfDebug_Passthrough):
+    RETURN_TYPES = ("FLOAT",)
 
 
 class KfDebug_Image(KfDebug_Passthrough):
-    RETURN_TYPES = ("Image",)
+    RETURN_TYPES = ("IMAGE",)
 
 
 class KfDebug_Int(KfDebug_Passthrough):
     RETURN_TYPES = ("INT",)
 
 
+class KfDebug_Latent(KfDebug_Passthrough):
+    RETURN_TYPES = ("LATENT",)
+
+
+class KfDebug_Model(KfDebug_Passthrough):
+    RETURN_TYPES = ("MODEL",)
+
+
 class KfDebug_String(KfDebug_Passthrough):
     RETURN_TYPES = ("STRING",)
+
+
+class KfDebug_Vae(KfDebug_Passthrough):
+    RETURN_TYPES = ("VAE",)
+
+
+##############################################
+
+### Custom Node Types
 
 
 class KfDebug_Segs(KfDebug_Passthrough):
     RETURN_TYPES = ("SEGS",)
 
 
-###########################
-
-class KfDebugDummy_Curve(KfDebug_DummyOutput):
+class KfDebug_Curve(KfDebug_Passthrough):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)
 
 
-class KfDebugDummy_Segs(KfDebug_DummyOutput):
-    RETURN_TYPES = ("SEGS",)
-
-
-
-###########################
+# ###########################
 
 
 NODE_CLASS_MAPPINGS = {
@@ -154,7 +151,6 @@ NODE_CLASS_MAPPINGS = {
     "KfDebug_Cond": KfDebug_Cond,
     "KfDebug_Curve": KfDebug_Curve,
     "KfDebug_Latent": KfDebug_Latent,
-    "KfDebugDummy_Curve": KfDebugDummy_Curve,
     "KfDebug_Model": KfDebug_Model,
     "KfDebug_Vae": KfDebug_Vae,
     "KfDebug_Clip": KfDebug_Clip,
