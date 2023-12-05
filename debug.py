@@ -147,17 +147,17 @@ class KfDebug_Curve(KfDebug_Passthrough):
 
 NODE_CLASS_MAPPINGS = {
     #"KfDebug_Passthrough": KfDebug_Passthrough,
-    "KfDebug_Float": KfDebug_Float,
+    "KfDebug_Clip": KfDebug_Clip,    
     "KfDebug_Cond": KfDebug_Cond,
     "KfDebug_Curve": KfDebug_Curve,
-    "KfDebug_Latent": KfDebug_Latent,
-    "KfDebug_Model": KfDebug_Model,
-    "KfDebug_Vae": KfDebug_Vae,
-    "KfDebug_Clip": KfDebug_Clip,
+    "KfDebug_Float": KfDebug_Float,
     "KfDebug_Image": KfDebug_Image,
     "KfDebug_Int": KfDebug_Int,
-    "KfDebug_String": KfDebug_String,
+    "KfDebug_Latent": KfDebug_Latent,
+    "KfDebug_Model": KfDebug_Model,
     "KfDebug_Segs": KfDebug_Segs,
+    "KfDebug_String": KfDebug_String,
+    "KfDebug_Vae": KfDebug_Vae,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
