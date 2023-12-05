@@ -21,7 +21,8 @@ class KfCurveFromString:
         }
     
     def main(self, chigozie_string):
-        return curve_from_cn_string(chigozie_string)
+        curve = curve_from_cn_string(chigozie_string)
+        return (curve,)
 
 
 class KfCurveFromYAML:
@@ -49,7 +50,8 @@ label: foo"""
         }
     
     def main(self, yaml):
-        return kf.serialization.from_yaml(yaml)
+        curve = kf.serialization.from_yaml(yaml)
+        return (curve,)
 
 
 class KfEvaluateCurveAtT:
@@ -85,7 +87,7 @@ class KfCurveToAcnLatentKeyframe:
         }
     def main(self, curve):
         warnings.warn("KfCurveToAcnLatentKeyframe not implemented")
-        return curve
+        return (curve,)
 
 
 NODE_CLASS_MAPPINGS = {

@@ -52,7 +52,17 @@ class KfDebug_Passthrough:
 
     _FORCED_INPUT = {"label": ("STRING", {
                     "multiline": True, #True if you want the field to look like the one on the ClipTextEncode node
-                    "default": ""})}
+                    "default": "debugging passthrough"})}
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        outv = {
+            "required": {
+                "item": (cls.RETURN_TYPES[0],{"forceInput": True,}),
+            },
+        }
+        outv["required"].update(cls._FORCED_INPUT)
+        return outv
 
     def main(self, item, label):
         #if label:
@@ -61,74 +71,48 @@ class KfDebug_Passthrough:
         return (item,) # pretty sure it's gotta be a tuple?
 
 
+class KfDebug_DummyOutput(KfDebug_Passthrough):
+    OUTPUT_NODE=True
+    _FORCED_INPUT = {"label": ("STRING", {
+                    "multiline": True, #True if you want the field to look like the one on the ClipTextEncode node
+                    "default": "dummy output"})}
+
 ###########################
 
+# there should be a way to create a type-agnostic passthrough node
 
 class KfDebug_Float(KfDebug_Passthrough):
-    CATEGORY=CATEGORY
-    FUNCTION = 'main'
     RETURN_TYPES = ("FLOAT",)
-
-    @classmethod
-    def INPUT_TYPES(cls):
-        outv= {
-            "required": {
-                "item": ("FLOAT",{"forceInput": True,}),
-            },
-        }
-        outv["required"].update(cls._FORCED_INPUT)
-        #logger.debug(outv)
-        return outv
 
 
 class KfDebug_Cond(KfDebug_Passthrough):
-    CATEGORY=CATEGORY
-    FUNCTION = 'main'
     RETURN_TYPES = ("CONDITIONING",)
 
-    @classmethod
-    def INPUT_TYPES(cls):
-        outv = {
-            "required": {
-                "item": ("CONDITIONING",{"forceInput": True,}),
-            },
-        }
-        outv["required"].update(cls._FORCED_INPUT)
-        return outv
+
+class KfDebug_Curve(KfDebug_Passthrough):
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
 
 
-# class KfDebug_(KfDebug_Passthrough):
-#     CATEGORY=CATEGORY
-#     FUNCTION = 'main'
-#     RETURN_TYPES = ("CONDITIONING",)
-
-#     @classmethod
-#     def INPUT_TYPES(s):
-#         return {
-#             "required": {
-#                 "item": ("CONDITIONING",{"forceInput": True,}),
-#             },
-#         }
+class KfDebug_Latent(KfDebug_Passthrough):
+    RETURN_TYPES = ("LATENT",)
 
 
-# class KfDebug_(KfDebug_Passthrough):
-#     CATEGORY=CATEGORY
-#     FUNCTION = 'main'
-#     RETURN_TYPES = ("CONDITIONING",)
+###########################
 
-#     @classmethod
-#     def INPUT_TYPES(s):
-#         return {
-#             "required": {
-#                 "item": ("CONDITIONING",{"forceInput": True,}),
-#             },
-#         }
+class KfDebugDummy_Curve(KfDebug_DummyOutput):
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+
+###########################
 
 
 NODE_CLASS_MAPPINGS = {
     #"KfDebug_Passthrough": KfDebug_Passthrough,
     "KfDebug_Float": KfDebug_Float,
     "KfDebug_Cond": KfDebug_Cond,
+    "KfDebug_Curve": KfDebug_Curve,
+    "KfDebug_Latent": KfDebug_Latent,
+    "KfDebugDummy_Curve": KfDebugDummy_Curve,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
