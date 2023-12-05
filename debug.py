@@ -49,9 +49,19 @@ def _inspect(item, depth=0):
 class KfDebug_Passthrough:
     CATEGORY=CATEGORY
     FUNCTION = 'main'
-    def main(self, item):
+
+    _FORCED_INPUT = {"label": ("STRING", {
+                    "multiline": True, #True if you want the field to look like the one on the ClipTextEncode node
+                    "default": ""})}
+
+    def main(self, item, label):
+        #if label:
+        logger.info(f"label: {label}")
         _inspect(item)
         return (item,) # pretty sure it's gotta be a tuple?
+
+
+###########################
 
 
 class KfDebug_Float(KfDebug_Passthrough):
@@ -60,12 +70,15 @@ class KfDebug_Float(KfDebug_Passthrough):
     RETURN_TYPES = ("FLOAT",)
 
     @classmethod
-    def INPUT_TYPES(s):
-        return {
+    def INPUT_TYPES(cls):
+        outv= {
             "required": {
                 "item": ("FLOAT",{"forceInput": True,}),
             },
         }
+        outv["required"].update(cls._FORCED_INPUT)
+        #logger.debug(outv)
+        return outv
 
 
 class KfDebug_Cond(KfDebug_Passthrough):
@@ -74,12 +87,42 @@ class KfDebug_Cond(KfDebug_Passthrough):
     RETURN_TYPES = ("CONDITIONING",)
 
     @classmethod
-    def INPUT_TYPES(s):
-        return {
+    def INPUT_TYPES(cls):
+        outv = {
             "required": {
                 "item": ("CONDITIONING",{"forceInput": True,}),
             },
         }
+        outv["required"].update(cls._FORCED_INPUT)
+        return outv
+
+
+# class KfDebug_(KfDebug_Passthrough):
+#     CATEGORY=CATEGORY
+#     FUNCTION = 'main'
+#     RETURN_TYPES = ("CONDITIONING",)
+
+#     @classmethod
+#     def INPUT_TYPES(s):
+#         return {
+#             "required": {
+#                 "item": ("CONDITIONING",{"forceInput": True,}),
+#             },
+#         }
+
+
+# class KfDebug_(KfDebug_Passthrough):
+#     CATEGORY=CATEGORY
+#     FUNCTION = 'main'
+#     RETURN_TYPES = ("CONDITIONING",)
+
+#     @classmethod
+#     def INPUT_TYPES(s):
+#         return {
+#             "required": {
+#                 "item": ("CONDITIONING",{"forceInput": True,}),
+#             },
+#         }
 
 
 NODE_CLASS_MAPPINGS = {
