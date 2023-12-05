@@ -41,7 +41,8 @@ def _inspect(item, depth=0):
         if hasattr(item, 'items'):
             for k,v in item.items():
                 logger.info(f"{pad}key: {k}")
-                logger.info(f"{pad}value: {_inspect(v, depth=depth+1)}")
+                #logger.info(f"{pad}value: {_inspect(v, depth=depth+1)}")
+                _inspect(v, depth=depth+1)
         log_item=False
     
     if isinstance(item, list):
