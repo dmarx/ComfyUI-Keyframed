@@ -27,4 +27,13 @@ is_installed("keyframed")
 
 from .nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
 
+print(os.environ.get('COMFYUI_DEBUG_MODE'))
+
+from .debug import NODE_CLASS_MAPPINGS as ncm0, NODE_DISPLAY_NAME_MAPPINGS as ndnm0
+
+# there's probably a cleaner, more-dummy-proof way to do this.
+# feels like an accident waiting to happen. low risk though.
+NODE_CLASS_MAPPINGS.update(ncm0)
+NODE_DISPLAY_NAME_MAPPINGS.update(ndnm0)
+
 __all__ =["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
