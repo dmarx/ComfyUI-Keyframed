@@ -1,7 +1,9 @@
 import keyframed as kf
 from keyframed.dsl import curve_from_cn_string
+import warnings
 
 CATEGORY = "keyframed"
+
 
 class KfCurveFromString:
     CATEGORY=CATEGORY
@@ -20,6 +22,7 @@ class KfCurveFromString:
     
     def main(self, chigozie_string):
         return curve_from_cn_string(chigozie_string)
+
 
 class KfCurveFromYAML:
     CATEGORY=CATEGORY
@@ -47,7 +50,8 @@ label: foo"""
     
     def main(self, yaml):
         return kf.serialization.from_yaml(yaml)
-    
+
+
 class KfEvaluateCurveAtT:
     CATEGORY=CATEGORY
     FUNCTION = 'main'
@@ -65,10 +69,30 @@ class KfEvaluateCurveAtT:
     def main(self, curve, t):
         return curve[t], int(curve[t])
 
+
+class KfCurveToAcnLatentKeyframe:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
+    RETURN_NAMES = ("LATENT_KF", )
+    RETURN_TYPES = ("LATENT_KEYFRAME",)
+    """Compatibility with Kosinkadink "Advanced Controlnet" AnimateDiff"""
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+        }
+    def main(self, curve):
+        warnings.warn("KfCurveToAcnLatentKeyframe not implemented")
+        return curve
+
+
 NODE_CLASS_MAPPINGS = {
     "KfCurveFromString": KfCurveFromString,
     "KfCurveFromYAML": KfCurveFromYAML,
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
+     "KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
@@ -76,4 +100,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KfCurveFromString": "Curve From String",
     "KfCurveFromYAML": "Curve From YAML",
     "KfEvaluateCurveAtT": "EvaluateCurveAtT",
+    "KfCurveToAcnLatentKeyframe": "Curve to ACN Latent Keyframe",
 }
