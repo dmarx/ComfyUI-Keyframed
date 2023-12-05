@@ -35,6 +35,7 @@ class KfCurveFromYAML:
         return {
             "required": {"yaml": ("STRING", {
                     "multiline": True, #True if you want the field to look like the one on the ClipTextEncode node
+                    # TO DO: replace this with kf.serializaiton.to_dict() # or whatever
                     "default": """curve:
 - - 0
   - 0

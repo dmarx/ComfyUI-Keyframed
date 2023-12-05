@@ -1,7 +1,7 @@
 import logging
 import torch
 import numpy as np
-
+from PIL.Image import Image
 
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -9,7 +9,8 @@ logger = logging.getLogger(__name__)
 
 CATEGORY="keyframed/debug"
 
-# i could probably use icecream or something like that for this
+# maybe use icecream here instead?
+# https://github.com/gruns/icecream
 def _inspect(item, depth=0):
     pad="\t"*depth
     if depth > 0:
@@ -18,13 +19,20 @@ def _inspect(item, depth=0):
     logger.info(f"{pad}type: {type(item)}")
     log_item=True
     
+    # maybe a bit overengineered. whatever.
     if hasattr(item, "shape"):
         logger.info(f"{pad}item.shape: {item.shape}")
         log_item=False
     elif hasattr(item, "size"):
-        logger.info(f"{pad}item.shape: {item.size}")
-        #logger.info(f"{pad}item.shape: {item.size()}")
+        try:
+            logger.info(f"{pad}item.shape: {item.size()}")
+        except TypeError:
+            logger.info(f"{pad}item.shape: {item.size}")
         log_item=False
+    
+    if isinstance(item, Image):
+        logger.info(f"{pad}item.mode: {item.mode}")
+
 
     # to do: be fancy and change to a match statement
     #if isinstance(item, dict):
@@ -97,10 +105,44 @@ class KfDebug_Latent(KfDebug_Passthrough):
     RETURN_TYPES = ("LATENT",)
 
 
+# Some types (string): "MODEL", "VAE", "CLIP", "IMAGE", "INT", "STRING"
+class KfDebug_Model(KfDebug_Passthrough):
+    RETURN_TYPES = ("MODEL",)
+
+
+class KfDebug_Vae(KfDebug_Passthrough):
+    RETURN_TYPES = ("VAE",)
+
+
+class KfDebug_Clip(KfDebug_Passthrough):
+    RETURN_TYPES = ("Clip",)
+
+
+class KfDebug_Image(KfDebug_Passthrough):
+    RETURN_TYPES = ("Image",)
+
+
+class KfDebug_Int(KfDebug_Passthrough):
+    RETURN_TYPES = ("INT",)
+
+
+class KfDebug_String(KfDebug_Passthrough):
+    RETURN_TYPES = ("STRING",)
+
+
+class KfDebug_Segs(KfDebug_Passthrough):
+    RETURN_TYPES = ("SEGS",)
+
+
 ###########################
 
 class KfDebugDummy_Curve(KfDebug_DummyOutput):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+
+class KfDebugDummy_Segs(KfDebug_DummyOutput):
+    RETURN_TYPES = ("SEGS",)
+
 
 
 ###########################
@@ -113,6 +155,13 @@ NODE_CLASS_MAPPINGS = {
     "KfDebug_Curve": KfDebug_Curve,
     "KfDebug_Latent": KfDebug_Latent,
     "KfDebugDummy_Curve": KfDebugDummy_Curve,
+    "KfDebug_Model": KfDebug_Model,
+    "KfDebug_Vae": KfDebug_Vae,
+    "KfDebug_Clip": KfDebug_Clip,
+    "KfDebug_Image": KfDebug_Image,
+    "KfDebug_Int": KfDebug_Int,
+    "KfDebug_String": KfDebug_String,
+    "KfDebug_Segs": KfDebug_Segs,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
