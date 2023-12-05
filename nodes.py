@@ -23,7 +23,7 @@ class KfCurveFromString:
         return {
             "required": {"chigozie_string": ("STRING", {
                     "multiline": True, #True if you want the field to look like the one on the ClipTextEncode node
-                    "default": "0: 1"
+                    "default": "0:(1)"
                 }),
             },
         }
@@ -119,12 +119,14 @@ class KfApplyCurveToCond:
             },
         }
     def main(self, curve, cond, latents=None, start_t=0, n=0):
-        logger.info(f"latents: {latents}")
-        #if latents is not None:
+        #logger.info(f"latents: {latents}")
+        logger.info(f"type(latents): {type(latents)}") # Latent is a dict that (presently) has one key, `samples`
         device = 'cpu' # probably should be handling this some other way
-        if isinstance(latents, torch.Tensor):
-            n = latents.shape[0] # batch dimension
-            device = latents.device
+        #if latents is not None:
+        if isinstance(latents, dict):
+            if 'samples' in latents:
+                n = latents['samples'].shape[0] # batch dimension
+                device = latents['samples'].device
         weights = [curve[start_t+i] for i in range(n)]
         weights = torch.tensor(weights, device=device)
         cond_out = []
