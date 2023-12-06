@@ -333,6 +333,18 @@ class KfCurvesDivide:
 
 ##################################################################
 
+# Working with parameter groupd
+
+# Create parameter group
+
+# add curve(s) to parameter group
+
+# get curve from parameter group
+
+
+
+##################################################################
+
 NODE_CLASS_MAPPINGS = {
     "KfCurveFromString": KfCurveFromString,
     "KfCurveFromYAML": KfCurveFromYAML,
