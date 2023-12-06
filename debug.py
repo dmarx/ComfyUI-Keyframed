@@ -45,7 +45,7 @@ def _inspect(item, depth=0):
                 _inspect(v, depth=depth+1)
         log_item=False
     
-    if isinstance(item, list):
+    if isinstance(item, list) or isinstance(item, tuple):
         logger.info(f"{pad}len(item): {len(item)}")
         for entry in item:
             _inspect(entry, depth=depth+1)

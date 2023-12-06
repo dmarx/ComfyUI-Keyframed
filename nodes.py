@@ -132,28 +132,57 @@ class KfApplyCurveToCond:
         cond_out = []
         for c_tensor, c_dict in cond:
             weights.to(c_tensor.device)
+            m=c_tensor.shape[0]
             if c_tensor.shape[0] == 1:
                 c_tensor = c_tensor.repeat(n, 1, 1) # batch, n_tokens, embeding_dim
-                
-            logger.info(f"c_tensor.shape:{c_tensor.shape}")
-            logger.info(f"weights.shape:{weights.shape}")
-            logger.info(f"weights.shape:{weights.view(n,1,1).shape}")
+                m=n
+            #logger.info(f"c_tensor.shape:{c_tensor.shape}")
+            #logger.info(f"weights.shape:{weights.shape}")
+            #logger.info(f"weights.shape:{weights.view(n,1,1).shape}")
             #c_tensor.mul_(weights)
-            c_tensor.mul_(weights.view(n,1,1))
+            c_tensor.mul_(weights.view(m,1,1))
             #c_tensor = c_tensor * weights
             #c_tensor = c_tensor
             if "pooled_output" in c_dict:
                 pooled = c_dict['pooled_output']
                 if pooled.shape[0] == 1:
-                    pooled = pooled.repeat(n, 1) # batch, embeding_dim
+                    pooled = pooled.repeat(m, 1) # batch, embeding_dim
                     #pooled.mul_(weights)
-                c_dict['pooled_output'] = pooled * weights.view(n,1)
+                c_dict['pooled_output'] = pooled * weights.view(m,1)
             cond_out.append((c_tensor, c_dict))
         return (cond_out,)
 
         #outv = torch.ones_like(latents) * torch.tensor(weights, device=latents.device)
         #return (cond, outv)
 
+
+# TODO: Add Conds
+#class ConditioningAverage:
+class KfConditioningAdd:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"conditioning_1": ("CONDITIONING", ),
+                             "conditioning_2": ("CONDITIONING", ),
+                             }}
+    RETURN_TYPES = ("CONDITIONING",)
+    FUNCTION = "main"
+
+    CATEGORY = "conditioning"
+
+    def main(self, conditioning_1, conditioning_2):
+        assert len(conditioning_1) == len(conditioning_2)
+
+        outv = []
+        for i, ((c1_tensor, c1_dict), (c2_tensor, c2_dict) ) in enumerate(zip(conditioning_1, conditioning_2)):
+            c1_tensor += c2_tensor
+            if ('pooled_output' in c1_dict) and ('pooled_output' in c2_dict):
+                c1_dict['pooled_output'] += c2_dict['pooled_output']
+            outv.append((c1_tensor, c1_dict))
+        return (outv, )
+
+# TODO: Add Curves (to compute normalization)
+
+# TODO: Divide Cond By Curve --> add ""
 
 ##################################################################
 
@@ -162,6 +191,7 @@ NODE_CLASS_MAPPINGS = {
     "KfCurveFromYAML": KfCurveFromYAML,
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
     "KfApplyCurveToCond": KfApplyCurveToCond,
+    "KfConditioningAdd": KfConditioningAdd,
     #"KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
 }
 
@@ -170,6 +200,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KfCurveFromString": "Curve From String",
     "KfCurveFromYAML": "Curve From YAML",
     "KfEvaluateCurveAtT": "Evaluate Curve At T",
-    "KfApplyCurveToCond": "Apply Curve to Conditioning"
+    "KfApplyCurveToCond": "Apply Curve to Conditioning",
+    "KfConditioningAdd": "Add Conditions"
     #"KfCurveToAcnLatentKeyframe": "Curve to ACN Latent Keyframe",
 }
