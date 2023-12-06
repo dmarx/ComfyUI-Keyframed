@@ -69,7 +69,7 @@ label: foo"""
 
 
 class KfEvaluateCurveAtT:
-    CATEGORY=CATEGORY
+    CATEGORY=CATEGORY # TODO: create a "utils" group
     FUNCTION = 'main'
     RETURN_TYPES = ("FLOAT","INT")
 
@@ -352,7 +352,7 @@ class KfCurveConstant:
 
 ##################################################################
 
-#### Working with parameter groups
+### TODO: Working with parameter groups
 
 
 # Label curve
@@ -437,6 +437,8 @@ class KfSinusoidalWithWavelength:
 
 ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #
 
+
+###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #
 
 class KfSinusoidalAdjustWavelength:
     CATEGORY = CATEGORY
@@ -551,6 +553,22 @@ class KfSinusoidalGetWavelength:
         return (curve.wavelength,)
 
 
+class KfSinusoidalGetFrequency:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("FLOAT",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+            }}
+
+    def main(self, curve):
+        return (1/curve.wavelength,)
+
+
 class KfSinusoidalGetPhase:
     CATEGORY = CATEGORY
     FUNCTION = "main"
@@ -582,24 +600,12 @@ class KfSinusoidalGetAmplitude:
     def main(self, curve):
         return (curve.amplitude,)
 
+##################################################################
 
-class KfSinusoidalGetFrequency:
-    CATEGORY = CATEGORY
-    FUNCTION = "main"
-    RETURN_TYPES = ("FLOAT",)
+# TODO: 0-1 curves (low frequency oscillators)
+# --> "1-X" operator
 
-    @classmethod
-    def INPUT_TYPES(s):
-        return {
-            "required": {
-                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
-            }}
-
-    def main(self, curve):
-        return (1/curve.wavelength,)
-
-
-
+# TODO: pre-entangled curves
 
 ##################################################################
 
