@@ -2,6 +2,7 @@ import keyframed as kf
 from keyframed.dsl import curve_from_cn_string
 import logging
 import torch
+from copy import deepcopy
 #import warnings
 
 
@@ -121,29 +122,32 @@ class KfApplyCurveToCond:
     def main(self, curve, cond, latents=None, start_t=0, n=0):
         #logger.info(f"latents: {latents}")
         logger.info(f"type(latents): {type(latents)}") # Latent is a dict that (presently) has one key, `samples`
-        device = 'cpu' # probably should be handling this some other way
+        #device = 'cpu' # probably should be handling this some other way
         #if latents is not None:
         if isinstance(latents, dict):
             if 'samples' in latents:
                 n = latents['samples'].shape[0] # batch dimension
-                device = latents['samples'].device
-        weights = [curve[start_t+i] for i in range(n)]
-        weights = torch.tensor(weights, device=device)
+                #device = latents['samples'].device
+        #weights = [curve[start_t+i] for i in range(n)]
+        #weights = torch.tensor(weights, device=device)
         cond_out = []
         for c_tensor, c_dict in cond:
-            weights.to(c_tensor.device)
+            #weights.to(c_tensor.device)
             m=c_tensor.shape[0]
             if c_tensor.shape[0] == 1:
                 c_tensor = c_tensor.repeat(n, 1, 1) # batch, n_tokens, embeding_dim
                 m=n
+            weights = [curve[start_t+i] for i in range(m)]
+            weights = torch.tensor(weights, device=c_tensor.device)
             #logger.info(f"c_tensor.shape:{c_tensor.shape}")
             #logger.info(f"weights.shape:{weights.shape}")
             #logger.info(f"weights.shape:{weights.view(n,1,1).shape}")
             #c_tensor.mul_(weights)
-            c_tensor.mul_(weights.view(m,1,1))
-            #c_tensor = c_tensor * weights
+            #c_tensor.mul_(weights.view(m,1,1)) # I think these in-place/mutating operations are messing things up
+            c_tensor = c_tensor * weights.view(m,1,1)
             #c_tensor = c_tensor
             if "pooled_output" in c_dict:
+                c_dict = deepcopy(c_dict) # hate this.
                 pooled = c_dict['pooled_output']
                 if pooled.shape[0] == 1:
                     pooled = pooled.repeat(m, 1) # batch, embeding_dim
@@ -159,15 +163,15 @@ class KfApplyCurveToCond:
 # TODO: Add Conds
 #class ConditioningAverage:
 class KfConditioningAdd:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("CONDITIONING",)
+
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {"conditioning_1": ("CONDITIONING", ),
                              "conditioning_2": ("CONDITIONING", ),
                              }}
-    RETURN_TYPES = ("CONDITIONING",)
-    FUNCTION = "main"
-
-    CATEGORY = "conditioning"
 
     def main(self, conditioning_1, conditioning_2):
         assert len(conditioning_1) == len(conditioning_2)
@@ -180,9 +184,46 @@ class KfConditioningAdd:
             outv.append((c1_tensor, c1_dict))
         return (outv, )
 
-# TODO: Add Curves (to compute normalization)
 
-# TODO: Divide Cond By Curve --> add ""
+# TODO: Add Curves (to compute normalization)
+class KfCurvesAdd:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve_1": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "curve_2": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+        }
+
+    def main(self, curve_1, curve_2):
+        return (curve_1 + curve_2, )
+
+class KfCurveInverse:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+            "hidden": {
+                "a": ("FLOAT", {"default": 0.0001}),
+            },
+        }
+    
+    def main(self, curve, a=0.0001):
+        curve = curve + a
+        curve = 1/curve
+        return (curve,)
+
 
 ##################################################################
 
@@ -192,6 +233,8 @@ NODE_CLASS_MAPPINGS = {
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
     "KfApplyCurveToCond": KfApplyCurveToCond,
     "KfConditioningAdd": KfConditioningAdd,
+    "KfCurvesAdd": KfCurvesAdd,
+    "KfCurveInverse": KfCurveInverse,
     #"KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
 }
 
