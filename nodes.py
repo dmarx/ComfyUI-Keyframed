@@ -189,49 +189,30 @@ class KfConditioningAdd:
         return (outv, )
 
 
-# TODO: Add Curves (to compute normalization)
-class KfCurvesAdd:
-    CATEGORY = CATEGORY
-    FUNCTION = "main"
-    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+# class KfCurveInverse:
+#     CATEGORY = CATEGORY
+#     FUNCTION = "main"
+#     RETURN_TYPES = ("KEYFRAMED_CURVE",)
 
-    @classmethod
-    def INPUT_TYPES(s):
-        return {
-            "required": {
-                "curve_1": ("KEYFRAMED_CURVE",{"forceInput": True,}),
-                "curve_2": ("KEYFRAMED_CURVE",{"forceInput": True,}),
-            },
-        }
-
-    def main(self, curve_1, curve_2):
-        return (curve_1 + curve_2, )
-
-
-class KfCurveInverse:
-    CATEGORY = CATEGORY
-    FUNCTION = "main"
-    RETURN_TYPES = ("KEYFRAMED_CURVE",)
-
-    @classmethod
-    def INPUT_TYPES(s):
-        return {
-            "required": {
-                "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
-            },
-            "hidden": {
-                "a": ("FLOAT", {"default": 0.0001}),
-            },
-        }
+#     @classmethod
+#     def INPUT_TYPES(s):
+#         return {
+#             "required": {
+#                 "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+#             },
+#             "hidden": {
+#                 "a": ("FLOAT", {"default": 0.0001}),
+#             },
+#         }
     
-    def main(self, curve, a=0.0001):
-        curve = curve + a
-        curve = 1/curve
-        return (curve,)
+#     def main(self, curve, a=0.0001):
+#         curve = curve + a
+#         curve = 1/curve
+#         return (curve,)
 
 
 class KfCurveDraw:
-    CATEGORY = CATEGORY
+    CATEGORY = f"{CATEGORY}/experimental"
     FUNCTION = "main"
     RETURN_TYPES = ("IMAGE",)
 
@@ -273,6 +254,82 @@ class KfCurveDraw:
         plot_array = torch.from_numpy(plot_array)
         return (plot_array,)
 
+###########################################
+
+# curve arithmetic
+
+# TODO: Add Curves (to compute normalization)
+class KfCurvesAdd:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve_1": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "curve_2": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+        }
+
+    def main(self, curve_1, curve_2):
+        return (curve_1 + curve_2, )
+
+
+class KfCurvesSubtract:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve_1": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "curve_2": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+        }
+
+    def main(self, curve_1, curve_2):
+        return (curve_1 - curve_2, )
+
+
+class KfCurvesMultiply:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve_1": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "curve_2": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+        }
+
+    def main(self, curve_1, curve_2):
+        return (curve_1 * curve_2, )
+
+
+class KfCurvesDivide:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve_1": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "curve_2": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+        }
+
+    def main(self, curve_1, curve_2):
+        return (curve_1 / curve_2, )
+
 
 ##################################################################
 
@@ -282,9 +339,12 @@ NODE_CLASS_MAPPINGS = {
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
     "KfApplyCurveToCond": KfApplyCurveToCond,
     "KfConditioningAdd": KfConditioningAdd,
-    "KfCurvesAdd": KfCurvesAdd,
     "KfCurveInverse": KfCurveInverse,
     "KfCurveDraw": KfCurveDraw,
+    "KfCurvesAdd": KfCurvesAdd,
+    "KfCurvesSubtract": KfCurvesSubtract,
+    "KfCurvesMultiply": KfCurvesMultiply,
+    "KfCurvesDivide": KfCurvesDivide,
     #"KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
 }
 
@@ -294,6 +354,10 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KfCurveFromYAML": "Curve From YAML",
     "KfEvaluateCurveAtT": "Evaluate Curve At T",
     "KfApplyCurveToCond": "Apply Curve to Conditioning",
-    "KfConditioningAdd": "Add Conditions"
+    "KfConditioningAdd": "Add Conditions",
     #"KfCurveToAcnLatentKeyframe": "Curve to ACN Latent Keyframe",
+    "KfCurvesAdd": "Curve_1 + Curve_2",
+    "KfCurvesSubtract": "Curve_1 - Curve_2",
+    "KfCurvesMultiply": "Curve_1 * Curve_2",
+    "KfCurvesDivide": "Curve_1 / Curve_2",
 }
