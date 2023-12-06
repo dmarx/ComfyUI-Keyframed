@@ -333,14 +333,22 @@ class KfCurvesDivide:
 
 ##################################################################
 
-# Working with parameter groupd
+#### Working with parameter groups
 
-# Create parameter group
+
+# Label curve
+## inputs: curve, label (text widget)
 
 # add curve(s) to parameter group
+## inputs: pgroup, curve
+## returns pgroup
+## if pgroup not provided, new one created
 
 # get curve from parameter group
+## inputs: pgroup, label
+## returns curve
 
+# extract a time slice from the parameter group
 
 
 ##################################################################
