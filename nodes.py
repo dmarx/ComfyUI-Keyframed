@@ -4,6 +4,10 @@ import logging
 import torch
 from copy import deepcopy
 #import warnings
+import matplotlib.pyplot as plt
+import numpy as np
+import io
+from PIL import Image
 
 
 logging.basicConfig(level=logging.INFO, 
@@ -203,6 +207,7 @@ class KfCurvesAdd:
     def main(self, curve_1, curve_2):
         return (curve_1 + curve_2, )
 
+
 class KfCurveInverse:
     CATEGORY = CATEGORY
     FUNCTION = "main"
@@ -225,6 +230,50 @@ class KfCurveInverse:
         return (curve,)
 
 
+class KfCurveDraw:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("IMAGE",)
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE",)
+            }
+        }
+
+    def main(self, curve):
+        """
+        
+        """
+        # Create a figure and axes object
+        fig, ax = plt.subplots()
+
+        # Build the plot using the provided function
+        #build_plot(ax)
+        #curve.plot(ax=ax)
+        curve.plot()
+        width, height = 10, 5 #inches
+        plt.figure(figsize=(width, height))
+
+        # Save the plot to a BytesIO object
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight')
+        buf.seek(0)
+
+        # Read the image into a numpy array, converting it to RGB mode
+        pil_image = Image.open(buf).convert('RGB')
+        plot_array = np.array(pil_image) #.astype(np.uint8)
+
+        # Convert the array to the desired shape [batch, channels, width, height]
+        #plot_array = np.transpose(plot_array, (2, 0, 1))  # Reorder to [channels, width, height]
+        #plot_array = np.expand_dims(plot_array, axis=0)   # Add the batch dimension
+        #plot_array = torch.tensor(plot_array) #.float()
+        plot_array = torch.from_numpy(plot_array)
+        return (plot_array,)
+
+
 ##################################################################
 
 NODE_CLASS_MAPPINGS = {
@@ -235,6 +284,7 @@ NODE_CLASS_MAPPINGS = {
     "KfConditioningAdd": KfConditioningAdd,
     "KfCurvesAdd": KfCurvesAdd,
     "KfCurveInverse": KfCurveInverse,
+    "KfCurveDraw": KfCurveDraw,
     #"KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
 }
 

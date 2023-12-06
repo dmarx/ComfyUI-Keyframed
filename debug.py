@@ -19,6 +19,10 @@ def _inspect(item, depth=0):
     logger.info(f"{pad}type: {type(item)}")
     log_item=True
     
+    if hasattr(item, "dtype"):
+        logger.info(f"{pad}item.dtype: {item.dtype}")
+        log_item=False
+
     # maybe a bit overengineered. whatever.
     if hasattr(item, "shape"):
         logger.info(f"{pad}item.shape: {item.shape}")
