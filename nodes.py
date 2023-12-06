@@ -351,7 +351,7 @@ NODE_CLASS_MAPPINGS = {
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
     "KfApplyCurveToCond": KfApplyCurveToCond,
     "KfConditioningAdd": KfConditioningAdd,
-    "KfCurveInverse": KfCurveInverse,
+    #"KfCurveInverse": KfCurveInverse,
     "KfCurveDraw": KfCurveDraw,
     "KfCurvesAdd": KfCurvesAdd,
     "KfCurvesSubtract": KfCurvesSubtract,
