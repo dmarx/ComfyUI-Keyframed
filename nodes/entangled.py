@@ -8,9 +8,14 @@ class KfSinusoidalEntangledZeroOne:
     #RETURN_TYPES = ("KEYFRAMED_CURVE", "SINUSOIDAL_CURVE")
 
     def main(self, n, **kargs):
-        tau = np.pi / 2
+        tau = 2*np.pi 
+        floor=.001 # fully zeroing out conditions creates "sharp edges" in the traversal
         a = 1/n
-        return [a+kf.SinusoidalCurve(phase=i/tau, amplitude=a, **kargs) for i in range(n)]
+        amplitude = a - floor/2
+
+        
+        #return [a+kf.SinusoidalCurve(phase=i/tau, amplitude=a, **kargs) for i in range(n)]
+        return [amplitude+kf.SinusoidalCurve(phase=tau*(n-i-1)/n, amplitude=amplitude, **kargs) for i in range(n)]
 
 
 class KfSinusoidalEntangledZeroOneFromWavelength(KfSinusoidalEntangledZeroOne):

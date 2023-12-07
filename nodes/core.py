@@ -602,6 +602,20 @@ class KfSinusoidalGetAmplitude:
 
 ##################################################################
 
+
+# KfScheduleConditions:
+#     """
+#     Carry curve and cond together for Simplicity
+#     """
+#     CATEGORY = CATEGORY
+#     FUNCTION = "main"
+#     RETURN_TYPES = ("COND_SCHEDULE",)
+
+
+# KfCombineWeightedConditions:
+
+##################################################################
+
 # TODO: 0-1 curves (low frequency oscillators)
 # --> "1-X" operator
 
