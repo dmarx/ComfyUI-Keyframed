@@ -69,7 +69,7 @@ label: foo"""
 
 
 class KfEvaluateCurveAtT:
-    CATEGORY=CATEGORY
+    CATEGORY=CATEGORY # TODO: create a "utils" group
     FUNCTION = 'main'
     RETURN_TYPES = ("FLOAT","INT")
 
@@ -313,6 +313,8 @@ class KfCurvesMultiply:
         return (curve_1 * curve_2, )
 
 
+## This seems to not be working properly. I think the issue is upstream in Keyframed
+# TODO: set as experimental?
 class KfCurvesDivide:
     CATEGORY = CATEGORY
     FUNCTION = "main"
@@ -331,9 +333,26 @@ class KfCurvesDivide:
         return (curve_1 / curve_2, )
 
 
+class KfCurveConstant:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "value": ("FLOAT", {"forceInput": True,})
+                }}
+    
+    def main(self, value):
+        curve = kf.Curve(value)
+        return (curve,)
+
+
 ##################################################################
 
-#### Working with parameter groups
+### TODO: Working with parameter groups
 
 
 # Label curve
@@ -353,19 +372,283 @@ class KfCurvesDivide:
 
 ##################################################################
 
+### Sinusoidal
+
+class KfSinusoidalWithFrequency:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE", "SINUSOIDAL_CURVE")
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "frequency": ("FLOAT",{
+                    "default": 1/12,
+                    "step": 0.01,
+                }),
+                "phase": ("FLOAT", {
+                    "default": 0.0,
+                    #"min": 0.0,
+                    #"max": 6.28318530718, # 2*pi
+                    "step": 0.1308996939, # pi/24
+                }),
+                "amplitude": ("FLOAT",{
+                    "default": 1,
+                    "step": 0.01,
+                }),
+            },
+        }
+
+    def main(self, frequency, phase, amplitude):
+        curve = kf.SinusoidalCurve(frequency=frequency, phase=phase, amplitude=amplitude)
+        return (curve, curve)
+
+class KfSinusoidalWithWavelength:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE", "SINUSOIDAL_CURVE")
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "wavelength": ("FLOAT",{
+                    "default": 12,
+                    "step": 0.5,
+                }),
+                "phase": ("FLOAT", {
+                    "default": 0.0,
+                    #"min": 0.0,
+                    #"max": 6.28318530718, # 2*pi
+                    "step": 0.1308996939, # pi/24
+                }),
+                "amplitude": ("FLOAT",{
+                    "default": 1,
+                    "step": 0.01,
+                }),
+            },
+        }
+
+    def main(self, wavelength, phase, amplitude):
+        curve = kf.SinusoidalCurve(wavelength=wavelength, phase=phase, amplitude=amplitude)
+        return (curve, curve)
+
+
+###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #
+
+
+###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #
+
+class KfSinusoidalAdjustWavelength:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE", "SINUSOIDAL_CURVE")
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+                "adjustment": ("FLOAT",{
+                    "default": 0.0,
+                    "step": 0.5,
+                }),
+            }}
+
+    def main(self, curve, adjustment):
+        wavelength, phase, amplitude = curve.wavelength, curve.phase, curve.amplitude 
+        wavelength += adjustment
+        curve = kf.SinusoidalCurve(wavelength=wavelength, phase=phase, amplitude=amplitude)
+        return (curve, curve)
+
+
+class KfSinusoidalAdjustPhase:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE", "SINUSOIDAL_CURVE")
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+                "adjustment": ("FLOAT", {
+                    "default": 0.0,
+                    "step": 0.1308996939, # pi/24
+                }),
+            }}
+    
+    def main(self, curve, adjustment):
+        wavelength, phase, amplitude = curve.wavelength, curve.phase, curve.amplitude 
+        phase += adjustment
+        curve = kf.SinusoidalCurve(wavelength=wavelength, phase=phase, amplitude=amplitude)
+        return (curve, curve)
+
+
+class KfSinusoidalAdjustFrequency:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE", "SINUSOIDAL_CURVE")
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+                "adjustment": ("FLOAT",{
+                    "default": 0,
+                    "step": 0.01,
+                }),
+            }}
+
+    def main(self, curve, adjustment):
+        wavelength, phase, amplitude = curve.wavelength, curve.phase, curve.amplitude
+        frequency = 1/wavelength
+        frequency += adjustment
+        wavelength = 1/frequency
+        curve = kf.SinusoidalCurve(wavelength=wavelength, phase=phase, amplitude=amplitude)
+        return (curve, curve)
+    
+
+class KfSinusoidalAdjustAmplitude:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE", "SINUSOIDAL_CURVE")
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+                "adjustment": ("FLOAT",{
+                    "default": 0,
+                    "step": 0.01,
+                }),
+            }}
+
+    def main(self, curve, adjustment):
+        wavelength, phase, amplitude = curve.wavelength, curve.phase, curve.amplitude 
+        amplitude += adjustment
+        curve = kf.SinusoidalCurve(wavelength=wavelength, phase=phase, amplitude=amplitude)
+        return (curve, curve)
+
+
+###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #   ###   #
+
+
+class KfSinusoidalGetWavelength:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("FLOAT",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+            }}
+
+    def main(self, curve):
+        return (curve.wavelength,)
+
+
+class KfSinusoidalGetFrequency:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("FLOAT",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+            }}
+
+    def main(self, curve):
+        return (1/curve.wavelength,)
+
+
+class KfSinusoidalGetPhase:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("FLOAT",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+            }}
+
+    def main(self, curve):
+        return (curve.phase,)
+
+
+class KfSinusoidalGetAmplitude:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("FLOAT",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("SINUSOIDAL_CURVE",{"forceInput": True,}),
+            }}
+
+    def main(self, curve):
+        return (curve.amplitude,)
+
+##################################################################
+
+
+# KfScheduleConditions:
+#     """
+#     Carry curve and cond together for Simplicity
+#     """
+#     CATEGORY = CATEGORY
+#     FUNCTION = "main"
+#     RETURN_TYPES = ("COND_SCHEDULE",)
+
+
+# KfCombineWeightedConditions:
+
+##################################################################
+
+# TODO: 0-1 curves (low frequency oscillators)
+# --> "1-X" operator
+
+# TODO: pre-entangled curves
+
+##################################################################
+
 NODE_CLASS_MAPPINGS = {
     "KfCurveFromString": KfCurveFromString,
     "KfCurveFromYAML": KfCurveFromYAML,
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
     "KfApplyCurveToCond": KfApplyCurveToCond,
     "KfConditioningAdd": KfConditioningAdd,
+    #"KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
+    #######################################
     #"KfCurveInverse": KfCurveInverse,
     "KfCurveDraw": KfCurveDraw,
     "KfCurvesAdd": KfCurvesAdd,
     "KfCurvesSubtract": KfCurvesSubtract,
     "KfCurvesMultiply": KfCurvesMultiply,
     "KfCurvesDivide": KfCurvesDivide,
-    #"KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
+    "KfCurveConstant": KfCurveConstant,
+    #########################
+    "KfSinusoidalWithFrequency": KfSinusoidalWithFrequency,
+    "KfSinusoidalWithWavelength": KfSinusoidalWithWavelength,
+    "KfSinusoidalAdjustWavelength": KfSinusoidalAdjustWavelength,
+    "KfSinusoidalAdjustPhase": KfSinusoidalAdjustPhase,
+    "KfSinusoidalAdjustFrequency": KfSinusoidalAdjustFrequency,
+    "KfSinusoidalAdjustAmplitude": KfSinusoidalAdjustAmplitude,
+    "KfSinusoidalGetWavelength": KfSinusoidalGetWavelength,
+    "KfSinusoidalGetPhase": KfSinusoidalGetPhase,
+    "KfSinusoidalGetAmplitude": KfSinusoidalGetAmplitude,
+    "KfSinusoidalGetFrequency": KfSinusoidalGetFrequency,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
