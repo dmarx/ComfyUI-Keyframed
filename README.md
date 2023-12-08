@@ -22,3 +22,6 @@ Treat curves/schedules and keyframes as objects that can be passed around, plugg
 
 ![Prompt Entanglement](examples/prompt-entanglement.png)
 
+## Simple Curved Parameter
+
+![Simple Curved Parameter](examples/simple-curved-parameter.png)
