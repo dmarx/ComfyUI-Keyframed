@@ -5,6 +5,7 @@ from functools import total_ordering
 from sortedcontainers import SortedDict, SortedList
 from .core import CATEGORY as RootCategory
 
+import numpy as np
 from numbers import Number
 
 import torch
@@ -325,23 +326,26 @@ class KfGetScheduleConditionSlice:
             "required": {
                 "schedule": ("SCHEDULE",{}),
                 "start": ("FLOAT",{"default":0}),
-                "stop": ("FLOAT",{"default":0}),
-                "n": ("INTEGER", {"default":1}),
-                "endpoint": ("BOOL", {"default":True})
+                #"stop": ("FLOAT",{"default":0}),
+                "step": ("FLOAT",{"default":1}),
+                "n": ("INT", {"default":24}),
+                #"endpoint": ("BOOL", {"default":True})
             }
         }
     
-    def main(self, schedule, start, stop, n, endpoint):
-        times = np.linspace(start=start, stop=stop, num=n, endpoint=endpoint)
-        conds = [evaluate_schedule_at_time(schedule, time) for time in times]
+    #def main(self, schedule, start, stop, n, endpoint):
+    def main(self, schedule, start, step, n):
+        stop = start+n*step
+        times = np.linspace(start=start, stop=stop, num=n, endpoint=True)
+        conds = [evaluate_schedule_at_time(schedule, time)[0] for time in times]
         lerped_tokenized = [c[0] for c in conds]
         lerped_pooled = [c[1]["pooled_output"] for c in conds]
-        lerped_tokenized_t = torch.cat(lerped_tokenized)
+        lerped_tokenized_t = torch.cat(lerped_tokenized, dim=0)
         logger.info(f"lerped_tokenized_t.shape: {lerped_tokenized_t.shape}")
         out_dict = deepcopy(conds[0][1])
         if isinstance(lerped_pooled[0], torch.Tensor) and isinstance(lerped_pooled[-1], torch.Tensor):
-            out_dict['pooled_output'] =  torch.cat(lerped_pooled)
-        return (lerped_conds, out_dict)
+            out_dict['pooled_output'] =  torch.cat(lerped_pooled, dim=0)
+        return [[(lerped_tokenized_t, out_dict)]] # uh... wrap it in lists until it doesn't complain?
 
 ###################################################################
 
@@ -349,6 +353,7 @@ NODE_CLASS_MAPPINGS = {
     "KfKeyframedCondition": KfKeyframedCondition,
     "KfSetKeyframe": KfSetKeyframe,
     "KfGetScheduleConditionAtTime": KfGetScheduleConditionAtTime,
+    "KfGetScheduleConditionSlice": KfGetScheduleConditionSlice,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {}
