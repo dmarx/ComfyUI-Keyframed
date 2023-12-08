@@ -18,3 +18,7 @@ Treat curves/schedules and keyframes as objects that can be passed around, plugg
 
 ![Prompt Scheduling](examples/prompt-scheduling.png)
 
+## Prompt Entanglement (aka Prompt Superposition)
+
+![Prompt Entanglement](examples/prompt-entanglement.png)
+
