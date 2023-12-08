@@ -143,7 +143,7 @@ class KfKeyframedCondition:
             kf_cond_pooled = kf.Keyframe(t=time, value=cond_pooled, interpolation_method=interpolation_method)
             cond_dict["pooled_output"] = cond_pooled
         
-        return {"kf_cond_t":kf_cond_t, "kf_cond_pooled":kf_cond_pooled, "cond_dict":cond_dict}
+        return ({"kf_cond_t":kf_cond_t, "kf_cond_pooled":kf_cond_pooled, "cond_dict":cond_dict},)
 
 
 class KfSetKeyframe:
@@ -164,14 +164,15 @@ class KfSetKeyframe:
     def main(self, keyframed_condition, schedule=None):
         #keyframe, kf_condition = keyframed_condition
         cond_dict = keyframed_condition.pop("cond_dict")
+        cond_dict = deepcopy(cond_dict)
 
         if schedule is None:
-            curve_tokenized = kf.Curve(keyframed_condition["kf_cond_t"], label="kf_cond_t")
+            curve_tokenized = kf.Curve([keyframed_condition["kf_cond_t"]], label="kf_cond_t")
             curves = [curve_tokenized]
             if keyframed_condition["kf_cond_pooled"] is not None:
-                curve_pooled = kf.Curve(keyframed_condition["kf_cond_pooled"], label="kf_cond_pooled")
+                curve_pooled = kf.Curve([keyframed_condition["kf_cond_pooled"]], label="kf_cond_pooled")
                 curves.append(curve_pooled)
-            schedule = kf.ParameterGroup(curves)
+            schedule = (kf.ParameterGroup(curves), cond_dict)
             #schedule = kf.ParameterGroup(keyframed_condition) #parameters
             #schedule = SortedList() #SortedDict
             #schedule = kf.Curve([keyframed_condition])
@@ -192,14 +193,19 @@ class KfSetKeyframe:
         return (schedule,)
 
 def evaluate_schedule_at_time(schedule, time):
+    #schedule, cond_dict = schedule
     schedule, cond_dict = schedule
-    cond_dict = deepcopy(cond_dict)
+    #cond_dict = deepcopy(cond_dict)
     values = schedule[time]
-    kf_cond_t = values.pop("kf_cond_t")
-    kf_cond_pooled = values.pop("kf_cond_pooled")
-    if kf_cond_pooled is not None:
-        cond_dict["pooled"] = kf_cond_pooled.clone()
-    return (kf_cond_t.clone(), cond_dict)
+    cond_t = values.get("kf_cond_t")
+    cond_pooled = values.get("kf_cond_pooled")
+    if cond_pooled is not None:
+        #cond_dict = deepcopy(cond_dict)
+        cond_dict["pooled_output"] = cond_pooled.clone()
+    logger.debug(f"type(cond_t):{type(cond_t)}")
+    logger.debug(f"type(cond_pooled):{type(cond_pooled)}")
+    logger.debug(f"type(cond_dict):{type(cond_dict)}")
+    return [(cond_t.clone(), cond_dict)]
 
 
 # def evaluate_schedule_at_time__OLD2(schedule, time):
@@ -305,6 +311,7 @@ class KfGetScheduleConditionAtTime:
     def main(self, schedule, time):
         lerped_cond = evaluate_schedule_at_time(schedule, time)
         return (lerped_cond,)
+        
 
 
 class KfGetScheduleConditionSlice:
