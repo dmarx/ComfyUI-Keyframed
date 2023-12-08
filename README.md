@@ -10,4 +10,11 @@
 
 # Philosophy
 
-Curves, interpolators, and keyframes are objects that can be passed around, plugged and unplugged, and interchanged.
+Treat curves/schedules and keyframes as objects that can be passed around, plugged and unplugged, interchanged, and manipulated atomically.
+
+# Starter Workflows
+
+## Prompt Scheduling
+
+![Prompt Scheduling](examples/prompt-scheduling.png)
+
