@@ -170,4 +170,9 @@ NODE_CLASS_MAPPINGS = {
     "KfGetScheduleConditionSlice": KfGetScheduleConditionSlice,
 }
 
-NODE_DISPLAY_NAME_MAPPINGS = {}
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "KfKeyframedCondition": "Keyframed Condition",
+    "KfSetKeyframe": "Set Keyframe",
+    "KfGetScheduleConditionAtTime": "Evaluate Schedule At T",
+    "KfGetScheduleConditionSlice": "Evaluate Schedule At T (Batch)",
+}
