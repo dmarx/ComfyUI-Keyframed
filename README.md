@@ -14,9 +14,11 @@ Treat curves/schedules and keyframes as objects that can be passed around, plugg
 
 # Starter Workflows
 
+
 ## Prompt Scheduling
 
 ![Prompt Scheduling](examples/prompt-scheduling.png)
+
 
 ## Prompt Interleaving (aka Prompt Entanglement, aka Prompt Superposition)
 
@@ -26,11 +28,57 @@ Which is the node equivalent for achieving this type of thing
 
 ![](https://pbs.twimg.com/media/Fqcdhe4agAEnJ-L?format=jpg&name=large)
 
+
 ## Simple Curved Parameter
 
 ![Simple Curved Parameter](examples/simple-curved-parameter.png)
 
+
 ## Multi-Prompt Transition With Manually Specified Curves
 
 ![Manual Prompt Transition](examples/manual-prompt-transition.png)
+
+
+# Nodes
+
+<!-- curve constructors -->
+
+## Curve From String
+
+![Curve From String](assets/node_curve-from-string.png)
+
+
+## Curve From YAML
+
+![Curve From YAML](assets/node_curve-from-yaml.png)
+
+
+## Constant-Valued Curve
+
+![Curve From YAML](assets/node_constant-valued-curve.png)
+
+
+<!-- curve operators -->
+
+## Evaluate Curve At T
+
+![Evaluate Curve At T](assets/node_evaluate-curve-at-t.png)
+
+
+## Apply Curve To Conditioning
+
+![Apply Curve To Conditioning](assets/node_apply-curve-to-conditioning.png)
+
+
+## Add Conditions
+
+![Apply Curve To Conditioning](assets/node_add-conditions.png)
+
+
+## Curve Arithmetic Operators
+
+![Curve Arithmetic](assets/nodes_curve-arithmetic.png)
+
+NB: the division operator is unreliable at the time of this writing (2023-12-09).
+
 

@@ -427,4 +427,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KfCurvesSubtract": "Curve_1 - Curve_2",
     "KfCurvesMultiply": "Curve_1 * Curve_2",
     "KfCurvesDivide": "Curve_1 / Curve_2",
+    "KfCurveConstant": "Constant-Valued Curve",
 }
