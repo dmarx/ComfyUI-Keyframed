@@ -87,42 +87,42 @@ class KfSinusoidalEntangledZeroOneFromFrequency(KfSinusoidalEntangledZeroOne):
         }
 
 
-class KfSinusoidalEntangledZeroOneFromFrequencyx2(KfSinusoidalEntangledZeroOneFromWavelength):
+class KfSinusoidalEntangledZeroOneFromFrequencyx2(KfSinusoidalEntangledZeroOneFromFrequency):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)*2
     def main(self, frequency):
         return super().main(n=2, frequency=frequency)
 
-class KfSinusoidalEntangledZeroOneFromFrequencyx3(KfSinusoidalEntangledZeroOneFromWavelength):
+class KfSinusoidalEntangledZeroOneFromFrequencyx3(KfSinusoidalEntangledZeroOneFromFrequency):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)*3
     def main(self, frequency):
         return super().main(n=3, frequency=frequency)
 
-class KfSinusoidalEntangledZeroOneFromFrequencyx4(KfSinusoidalEntangledZeroOneFromWavelength):
+class KfSinusoidalEntangledZeroOneFromFrequencyx4(KfSinusoidalEntangledZeroOneFromFrequency):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)*4
     def main(self, frequency):
         return super().main(n=4, frequency=frequency)
 
-class KfSinusoidalEntangledZeroOneFromFrequencyx5(KfSinusoidalEntangledZeroOneFromWavelength):
+class KfSinusoidalEntangledZeroOneFromFrequencyx5(KfSinusoidalEntangledZeroOneFromFrequency):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)*5
     def main(self, frequency):
         return super().main(n=5, frequency=frequency)
 
-class KfSinusoidalEntangledZeroOneFromFrequencyx6(KfSinusoidalEntangledZeroOneFromWavelength):
+class KfSinusoidalEntangledZeroOneFromFrequencyx6(KfSinusoidalEntangledZeroOneFromFrequency):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)*6
     def main(self, frequency):
         return super().main(n=6, frequency=frequency)
 
-class KfSinusoidalEntangledZeroOneFromFrequencyx7(KfSinusoidalEntangledZeroOneFromWavelength):
+class KfSinusoidalEntangledZeroOneFromFrequencyx7(KfSinusoidalEntangledZeroOneFromFrequency):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)*7
     def main(self, frequency):
         return super().main(n=7, frequency=frequency)
     
-class KfSinusoidalEntangledZeroOneFromFrequencyx8(KfSinusoidalEntangledZeroOneFromWavelength):
+class KfSinusoidalEntangledZeroOneFromFrequencyx8(KfSinusoidalEntangledZeroOneFromFrequency):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)*8
     def main(self, frequency):
         return super().main(n=8, frequency=frequency)
 
-class KfSinusoidalEntangledZeroOneFromFrequencyx9(KfSinusoidalEntangledZeroOneFromWavelength):
+class KfSinusoidalEntangledZeroOneFromFrequencyx9(KfSinusoidalEntangledZeroOneFromFrequency):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)*9
     def main(self, frequency):
         return super().main(n=9, frequency=frequency)
