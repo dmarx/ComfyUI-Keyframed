@@ -68,17 +68,23 @@ class KfSetKeyframe:
             }
         }
     def main(self, keyframed_condition, schedule=None):
+        keyframed_condition = deepcopy(keyframed_condition)
         cond_dict = keyframed_condition.pop("cond_dict")
-        cond_dict = deepcopy(cond_dict)
+        #cond_dict = deepcopy(cond_dict)
 
         if schedule is None:
-            curve_tokenized = kf.Curve([keyframed_condition["kf_cond_t"]], label="kf_cond_t")
+            # get a new copy of the tensor
+            kf_cond_t = keyframed_condition["kf_cond_t"]
+            #kf_cond_t.value = kf_cond_t.value.clone() # should be redundant with the deepcopy
+            curve_tokenized = kf.Curve([kf_cond_t], label="kf_cond_t")
             curves = [curve_tokenized]
             if keyframed_condition["kf_cond_pooled"] is not None:
-                curve_pooled = kf.Curve([keyframed_condition["kf_cond_pooled"]], label="kf_cond_pooled")
+                kf_cond_pooled = keyframed_condition["kf_cond_pooled"]
+                curve_pooled = kf.Curve([kf_cond_pooled], label="kf_cond_pooled")
                 curves.append(curve_pooled)
             schedule = (kf.ParameterGroup(curves), cond_dict)
         else:
+            schedule = deepcopy(schedule)
             schedule, old_cond_dict = schedule
             for k, v in keyframed_condition.items():
                 if (v is not None):
@@ -91,6 +97,7 @@ class KfSetKeyframe:
 
 
 def evaluate_schedule_at_time(schedule, time):
+    schedule = deepcopy(schedule)
     schedule, cond_dict = schedule
     #cond_dict = deepcopy(cond_dict)
     values = schedule[time]
@@ -98,8 +105,9 @@ def evaluate_schedule_at_time(schedule, time):
     cond_pooled = values.get("kf_cond_pooled")
     if cond_pooled is not None:
         #cond_dict = deepcopy(cond_dict)
-        cond_dict["pooled_output"] = cond_pooled.clone()
-    return [(cond_t.clone(), cond_dict)]
+        cond_dict["pooled_output"] = cond_pooled #.clone()
+    #return [(cond_t.clone(), cond_dict)]
+    return [(cond_t, cond_dict)]
 
 
 class KfGetScheduleConditionAtTime:
@@ -162,4 +170,9 @@ NODE_CLASS_MAPPINGS = {
     "KfGetScheduleConditionSlice": KfGetScheduleConditionSlice,
 }
 
-NODE_DISPLAY_NAME_MAPPINGS = {}
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "KfKeyframedCondition": "Keyframed Condition",
+    "KfSetKeyframe": "Set Keyframe",
+    "KfGetScheduleConditionAtTime": "Evaluate Schedule At T",
+    "KfGetScheduleConditionSlice": "Evaluate Schedule At T (Batch)",
+}
