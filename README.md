@@ -41,44 +41,59 @@ Which is the node equivalent for achieving this type of thing
 
 # Nodes
 
-<!-- curve constructors -->
+## Curve Constructors
 
-## Curve From String
+### Curve From String
 
 ![Curve From String](assets/node_curve-from-string.png)
 
 
-## Curve From YAML
+### Curve From YAML
 
 ![Curve From YAML](assets/node_curve-from-yaml.png)
 
 
-## Constant-Valued Curve
+### Constant-Valued Curve
 
 ![Curve From YAML](assets/node_constant-valued-curve.png)
 
 
-<!-- curve operators -->
+## Curve Operators
 
-## Evaluate Curve At T
+### Evaluate Curve At T
 
 ![Evaluate Curve At T](assets/node_evaluate-curve-at-t.png)
 
 
-## Apply Curve To Conditioning
+### Apply Curve To Conditioning
 
 ![Apply Curve To Conditioning](assets/node_apply-curve-to-conditioning.png)
 
 
-## Add Conditions
+### Add Conditions
 
 ![Apply Curve To Conditioning](assets/node_add-conditions.png)
 
 
-## Curve Arithmetic Operators
+### Curve Arithmetic Operators
 
 ![Curve Arithmetic](assets/nodes_curve-arithmetic.png)
 
 NB: the division operator is unreliable at the time of this writing (2023-12-09).
 
+
+## Scheduling
+
+### Keyframed Condition
+
+![Keyframed Condition](assets/node_keyframed-condition.png)
+
+
+### Set Keyframe
+
+![Set Keyframe](assets/node_set-keyframe.png)
+
+### Evaluate Schedule
+
+![Evaluate Schedule](assets/nodes_evaluate-schedule.png)
 
