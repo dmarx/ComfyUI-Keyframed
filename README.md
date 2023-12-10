@@ -25,6 +25,7 @@ Similar project you might find more convenient for certain use cases https://git
       * [Curve Arithmetic Operators](#curve-arithmetic-operators)
    * [Scheduling](#scheduling)
       * [Keyframed Condition](#keyframed-condition)
+         * [Interpolation Methods](#interpolation-methods)
       * [Set Keyframe](#set-keyframe)
       * [Evaluate Schedule](#evaluate-schedule)
 <!--te-->
