@@ -1,5 +1,9 @@
 # ComfyUI-Keyframed
 
+🚧 Work In Progress 🚧 - ComfyUI nodes to facilitate value keyframing by providing an interface for using [keyframed](https://github.com/dmarx/keyframed) in ComfyUI workflows.
+
+Similar project you might find more convenient for certain use cases https://github.com/FizzleDorf/ComfyUI_FizzNodes
+
 <!--ts-->
 * [ComfyUI-Keyframed](#comfyui-keyframed)
 * [Overview](#overview)
@@ -25,9 +29,6 @@
       * [Evaluate Schedule](#evaluate-schedule)
 <!--te-->
 
-🚧 Work In Progress 🚧 - ComfyUI nodes to facilitate value keyframing by providing an interface for using [keyframed](https://github.com/dmarx/keyframed) in ComfyUI workflows.
-
-Similar project you might find more convenient for certain use cases https://github.com/FizzleDorf/ComfyUI_FizzNodes
 
 # Overview
 
