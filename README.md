@@ -21,6 +21,8 @@ Treat curves/schedules and keyframes as objects that can be passed around, plugg
 
  This one is probably why you are here. This workflow demonstrates how to use the `keyframed/schedule` nodes to achieve similar behavior as [FizzNodes'](https://github.com/FizzleDorf/ComfyUI_FizzNodes) **PromptSchedule** node, but implemented differently.
 
+This schedule is essentailly a normal AnimateDiff workflow where several nodes have replaced the normal conditioning setup. Rather than a single `CLIP Text Encode` node, we can have multiple prompts which transition sequentially over time. 
+
 ## Prompt Interleaving (aka Prompt Entanglement, aka Prompt Superposition)
 
 ![Prompt Entanglement](examples/prompt-entanglement.png)
