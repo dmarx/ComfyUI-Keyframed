@@ -5,18 +5,19 @@
 
 🚧 Work In Progress 🚧 - ComfyUI nodes to facilitate value keyframing by providing an interface for using [keyframed](https://github.com/dmarx/keyframed) in ComfyUI workflows.
 
+Similar project you might find more convenient for certain use cases https://github.com/FizzleDorf/ComfyUI_FizzNodes
 
-...Open question: if I make this, what will differentiate it from https://github.com/FizzleDorf/ComfyUI_FizzNodes ?
+# Overview
 
-* easier curve composition
-* easier to change interpolators/easing functions
+**Philosophy**
 
-# Philosophy
+* Treat curves/schedules and keyframes as objects that can be passed around, plugged and unplugged, interchanged, and manipulated atomically.
+* Leverage nodes to facilitate modularity and flexibility.
+* Facilitate fast iteration
+* Provide convenience functions for most common use cases, and also low-leverl operators capable of reproducing the behavior of those convenience functions to permit user customization in "node space".
 
-Treat curves/schedules and keyframes as objects that can be passed around, plugged and unplugged, interchanged, and manipulated atomically.
 
 # Starter Workflows
-
 
 ## Prompt Scheduling
 
