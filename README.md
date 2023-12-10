@@ -130,7 +130,19 @@ Reference the [Prompt Scheduling Workflow](https://github.com/dmarx/ComfyUI-Keyf
 
 ![Keyframed Condition](assets/node_keyframed-condition.png)
 
-This node attaches a `conditioning` to a `keyframe`. This let's us assign a time to the conditioning and set what interpolation method to use when we're between keyframes. Consider three time points `a,b,c` such that `a<b<c`, and two keyframes `X,Y` such that `X.time = a` and `Y.time = c`. To interpolate a value at time `b`, we would use `X.interpolation_method` to "tween" the value between `X.value` and `Y.value`.
+This node attaches a `conditioning` to a `keyframe`. This let's us assign a time to the conditioning and set what interpolation method to use when we're between keyframes. 
+
+#### Interpolation Methods
+
+Consider three time points `a,b,c` such that `a<b<c`, and two keyframes `X,Y` such that `X.time = a` and `Y.time = c`. To interpolate a value at time `b`, we would use `X.interpolation_method` to "tween" the value between `X.value` and `Y.value`. 
+
+* **`null`** - If the interpolation value is not set, the default interpolation is "previous".
+* **`previous`** - `X.time`
+* **`next`** - `Y.time`
+* **`linear`** - normal linear lerp. Matches the behavior of Deforum and FizzNodes.
+* **`sine_wave`** - sine function easing. slower close to terminal values, fastest at the middle of the transition.
+* **`eased_lerp** - sin2 easing. similar to sine but starts and ends slower and the fastest part is faster.
+* **`exp_decay`** - starts fast ends slow.
 
 ### Set Keyframe
 
