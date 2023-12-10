@@ -119,6 +119,8 @@ NB: the division operator is unreliable at the time of this writing (2023-12-09)
 
 ## Scheduling
 
+These nodes work together to facilitate transitioning through a sequence of conditionings (i.e. prompts). We'll call this sequence the "schedule" of the conditionings. The primary use case here is for manipulating the positive prompt, i.e. for building a "prompt schedule". Given a particular time (e.g. frame id) in an animation seuquence, we can query the prompt schedule at that time to get the appropriate conditioning to pass to the KSampler.
+
 ### Keyframed Condition
 
 ![Keyframed Condition](assets/node_keyframed-condition.png)
