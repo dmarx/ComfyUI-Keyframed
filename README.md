@@ -155,3 +155,5 @@ Attaches a keyframe to a schedule. If you haven't created a schedule yet, pass y
 
 ![Evaluate Schedule](assets/nodes_evaluate-schedule.png)
 
+Evaluate the schedule at a time or time slice to extract a single conditioning or conditioning batch (respectively) to provide to e.g. a KSampler. The non-batch version gives the same kind of conditioning you'd get from a `CLIPTextConditioning` node. The intention of the batch version is to use with AnimateDiff to apply different conditionings per frame.
+
