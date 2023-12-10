@@ -1,15 +1,18 @@
-# ComfyUI-Keyframed
+# Keyframed Nodes For ComfyUI
 
-🚧 Work In Progress 🚧 - ComfyUI nodes to facilitate value keyframing by providing an interface for using [keyframed](https://github.com/dmarx/keyframed) in ComfyUI workflows.
+ComfyUI nodes to facilitate parameter/prompt keyframing using comfyui nodes for defining and manipulating parameter curves. Essentially provides a ComfyUI interface to the [keyframed](https://github.com/dmarx/keyframed) library.
 
-Similar project you might find more convenient for certain use cases https://github.com/FizzleDorf/ComfyUI_FizzNodes
+Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
+
+---
 
 <!--ts-->
-* [ComfyUI-Keyframed](#comfyui-keyframed)
+* [Keyframed Nodes For ComfyUI](#keyframed-nodes-for-comfyui)
 * [Overview](#overview)
 * [Starter Workflows](#starter-workflows)
    * [Prompt Scheduling](#prompt-scheduling)
-   * [Prompt Interleaving (aka Prompt Entanglement, aka Prompt Superposition)](#prompt-interleaving-aka-prompt-entanglement-aka-prompt-superposition)
+   * [Interleaving Multiple Prompts Simultaneously (aka Prompt Entanglement, aka Prompt Superposition)](#interleaving-multiple-prompts-simultaneously-aka-prompt-entanglement-aka-prompt-superposition)
+   * [AnimateDiff Prompt Superposition - Complex Workflow](#animatediff-prompt-superposition---complex-workflow)
    * [Simple Curved Parameter](#simple-curved-parameter)
    * [Multi-Prompt Transition With Manually Specified Curves](#multi-prompt-transition-with-manually-specified-curves)
 * [Nodes](#nodes)
@@ -51,7 +54,7 @@ Similar project you might find more convenient for certain use cases https://git
 
 This schedule is essentailly a normal AnimateDiff workflow where several nodes have replaced the normal conditioning setup. Rather than a single `CLIP Text Encode` node, we can have multiple prompts which transition sequentially over time. For documentation detailing how this workflow works, see the [`Nodes > Scheduling`](https://github.com/dmarx/ComfyUI-Keyframed/blob/dev/README.md#scheduling) section below.
 
-## Prompt Interleaving (aka Prompt Entanglement, aka Prompt Superposition)
+## Interleaving Multiple Prompts Simultaneously (aka Prompt Entanglement, aka Prompt Superposition)
 
 ![Prompt Entanglement](examples/prompt-entanglement.png)
 
@@ -60,6 +63,17 @@ Which is the node equivalent for achieving this type of thing
 ![](https://pbs.twimg.com/media/Fqcdhe4agAEnJ-L?format=jpg&name=large)
 
 For documentation detailing how this workflow works, see the [`Nodes > Entangled Curves`](https://github.com/dmarx/ComfyUI-Keyframed?tab=readme-ov-file#entangled-curves) section below.
+
+## AnimateDiff Prompt Superposition - Complex Workflow
+
+![Prompt Entanglement](examples/8x-interleaved-prompts_2phase-ad_loop-friendly-vfi_upscale.png)
+
+Workflow output: https://twitter.com/DigThatData/status/1733416414864957484
+
+* 8x Prompt superposition
+* Second pass of AnimateDiff with denoise reduced to serve as a "refinement pass"
+* FiLM Video Frame Interpolation (VFI) modified to interpolate looping videos correctly
+* ESRGAN 2x Upscaling
 
 ## Simple Curved Parameter
 
@@ -70,6 +84,7 @@ For documentation detailing how this workflow works, see the [`Nodes > Entangled
 
 ![Manual Prompt Transition](examples/manual-prompt-transition.png)
 
+If you're feeling adventurous, this workflow demonstrates how you would use the curve objects directly to acheive the same thing as a schedule. Each prompt gets its own seaparate curve indicating the weight of the prompt at that time (you probably want the various conditionings weights to sum to 1 when combined. If you need to "fill" missing conditioning weight, try using an empty prompt).
 
 # Nodes
 
@@ -79,16 +94,19 @@ For documentation detailing how this workflow works, see the [`Nodes > Entangled
 
 ![Curve From String](assets/node_curve-from-string.png)
 
+Supports commonly used notation for curved parameter. See also Deforum, FizzNodes, https://www.chigozie.co.uk/keyframe-string-generator/
 
 ### Curve From YAML
 
 ![Curve From YAML](assets/node_curve-from-yaml.png)
 
+Supports curved parameter notation used by https://github.com/dmarx/keyframed
 
 ### Constant-Valued Curve
 
 ![Curve From YAML](assets/node_constant-valued-curve.png)
 
+Returns a curve which evaluates to the same value for all values of `t` (time). Especially useful for curve arithmetic.
 
 ### Entangled Curves
 
