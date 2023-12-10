@@ -1,5 +1,8 @@
 # ComfyUI-Keyframed
 
+<!--ts-->
+<!--te-->
+
 🚧 Work In Progress 🚧 - ComfyUI nodes to facilitate value keyframing by providing an interface for using [keyframed](https://github.com/dmarx/keyframed) in ComfyUI workflows.
 
 
