@@ -19,6 +19,7 @@ Treat curves/schedules and keyframes as objects that can be passed around, plugg
 
 ![Prompt Scheduling](examples/prompt-scheduling.png)
 
+ This one is probably why you are here. This workflow demonstrates how to use the `keyframed/schedule` nodes to achieve similar behavior as [FizzNodes'](https://github.com/FizzleDorf/ComfyUI_FizzNodes) **PromptSchedule** node, but implemented differently.
 
 ## Prompt Interleaving (aka Prompt Entanglement, aka Prompt Superposition)
 
