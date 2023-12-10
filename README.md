@@ -108,6 +108,8 @@ Reference the [Prompt Interleaving Workflow](https://github.com/dmarx/ComfyUI-Ke
 
 ![Apply Curve To Conditioning](assets/node_apply-curve-to-conditioning.png)
 
+Generates a batch of `n` conditionings multiplying each conditioning by th value of the curve at that conditioning's index within the batch. If a batch of latents is provided, `n` is ignored and the size of the latent batch is used. If the provided conditioning object has batch size > 1, the conditioning's batch size takes priority over the latent batch size and `n`.
+
 
 ### Add Conditions
 
