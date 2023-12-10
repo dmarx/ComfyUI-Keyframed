@@ -1,6 +1,6 @@
 # ComfyUI-Keyframed
 
-🚧 Work In Progress 🚧 - ComfyUI nodes to facilitate value keyframing by providing an interface for using [keyframed](https://github.com/dmarx/keyframed) in ComfyUI workflows.
+ComfyUI nodes to facilitate parameter/prompt keyframing using comfyui nodes for defining and manipulating parameter curves. Essentially provides a ComfyUI interface to the [keyframed](https://github.com/dmarx/keyframed) library.
 
 Similar project you might find more convenient for certain use cases https://github.com/FizzleDorf/ComfyUI_FizzNodes
 
