@@ -59,6 +59,7 @@ Which is the node equivalent for achieving this type of thing
 
 ![](https://pbs.twimg.com/media/Fqcdhe4agAEnJ-L?format=jpg&name=large)
 
+For documentation detailing how this workflow works, see the [`Nodes > Entangled Curves`](https://github.com/dmarx/ComfyUI-Keyframed?tab=readme-ov-file#entangled-curves) section below.
 
 ## Simple Curved Parameter
 
