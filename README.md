@@ -70,6 +70,7 @@ For documentation detailing how this workflow works, see the [`Nodes > Entangled
 
 ![Manual Prompt Transition](examples/manual-prompt-transition.png)
 
+If you're feeling adventurous, this workflow demonstrates how you would use the curve objects directly to acheive the same thing as a schedule. Each prompt gets its own seaparate curve indicating the weight of the prompt at that time (you probably want the various conditionings weights to sum to 1 when combined. If you need to "fill" missing conditioning weight, try using an empty prompt).
 
 # Nodes
 
