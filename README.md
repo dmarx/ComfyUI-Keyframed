@@ -51,7 +51,7 @@ Similar project you might find more convenient for certain use cases https://git
 
 This schedule is essentailly a normal AnimateDiff workflow where several nodes have replaced the normal conditioning setup. Rather than a single `CLIP Text Encode` node, we can have multiple prompts which transition sequentially over time. For documentation detailing how this workflow works, see the [`Nodes > Scheduling`](https://github.com/dmarx/ComfyUI-Keyframed/blob/dev/README.md#scheduling) section below.
 
-## Prompt Interleaving (aka Prompt Entanglement, aka Prompt Superposition)
+## Interleaving Multiple Prompts Simultaneously (aka Prompt Entanglement, aka Prompt Superposition)
 
 ![Prompt Entanglement](examples/prompt-entanglement.png)
 
@@ -60,6 +60,17 @@ Which is the node equivalent for achieving this type of thing
 ![](https://pbs.twimg.com/media/Fqcdhe4agAEnJ-L?format=jpg&name=large)
 
 For documentation detailing how this workflow works, see the [`Nodes > Entangled Curves`](https://github.com/dmarx/ComfyUI-Keyframed?tab=readme-ov-file#entangled-curves) section below.
+
+## AnimateDiff Prompt Superposition - Complex Workflow
+
+![Prompt Entanglement](examples/8x-interleaved-prompts_2phase-ad_loop-friendly-vfi_upscale.png)
+
+Workflow output: https://twitter.com/DigThatData/status/1733416414864957484
+
+* 8x Prompt superposition
+* Second pass of AnimateDiff with denoise reduced to serve as a "refinement pass"
+* FiLM Video Frame Interpolation (VFI) modified to interpolate looping videos correctly
+* ESRGAN 2x Upscaling
 
 ## Simple Curved Parameter
 
