@@ -124,8 +124,10 @@ class KfApplyCurveToCond:
             },
         }
     def main(self, curve, cond, latents=None, start_t=0, n=0):
+        curve = deepcopy(curve)
+        cond = deepcopy(cond)
         #logger.info(f"latents: {latents}")
-        logger.info(f"type(latents): {type(latents)}") # Latent is a dict that (presently) has one key, `samples`
+        #logger.info(f"type(latents): {type(latents)}") # Latent is a dict that (presently) has one key, `samples`
         #device = 'cpu' # probably should be handling this some other way
         #if latents is not None:
         if isinstance(latents, dict):
@@ -178,6 +180,8 @@ class KfConditioningAdd:
                              }}
 
     def main(self, conditioning_1, conditioning_2):
+        conditioning_1 = deepcopy(conditioning_1)
+        conditioning_2 = deepcopy(conditioning_2)
         assert len(conditioning_1) == len(conditioning_2)
 
         outv = []
@@ -274,6 +278,8 @@ class KfCurvesAdd:
         }
 
     def main(self, curve_1, curve_2):
+        curve_1 = deepcopy(curve_1)
+        curve_2 = deepcopy(curve_2)
         return (curve_1 + curve_2, )
 
 
@@ -292,6 +298,8 @@ class KfCurvesSubtract:
         }
 
     def main(self, curve_1, curve_2):
+        curve_1 = deepcopy(curve_1)
+        curve_2 = deepcopy(curve_2)
         return (curve_1 - curve_2, )
 
 
@@ -310,6 +318,8 @@ class KfCurvesMultiply:
         }
 
     def main(self, curve_1, curve_2):
+        curve_1 = deepcopy(curve_1)
+        curve_2 = deepcopy(curve_2)
         return (curve_1 * curve_2, )
 
 
@@ -330,6 +340,8 @@ class KfCurvesDivide:
         }
 
     def main(self, curve_1, curve_2):
+        curve_1 = deepcopy(curve_1)
+        curve_2 = deepcopy(curve_2)
         return (curve_1 / curve_2, )
 
 
