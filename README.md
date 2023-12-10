@@ -130,6 +130,7 @@ Reference the [Prompt Scheduling Workflow](https://github.com/dmarx/ComfyUI-Keyf
 
 ![Keyframed Condition](assets/node_keyframed-condition.png)
 
+This node attaches a `conditioning` to a `keyframe`. This let's us assign a time to the conditioning and set what interpolation method to use when we're between keyframes. Consider three time points `a,b,c` such that `a<b<c`, and two keyframes `X,Y` such that `X.time = a` and `Y.time = c`. To interpolate a value at time `b`, we would use `X.interpolation_method` to "tween" the value between `X.value` and `Y.value`.
 
 ### Set Keyframe
 
