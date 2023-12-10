@@ -7,7 +7,7 @@ Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
 ---
 
 <!--ts-->
-* [ComfyUI-Keyframed](#comfyui-keyframed)
+* [Keyframed Nodes For ComfyUI](#keyframed-nodes-for-comfyui)
 * [Overview](#overview)
 * [Starter Workflows](#starter-workflows)
    * [Prompt Scheduling](#prompt-scheduling)
