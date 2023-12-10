@@ -1,6 +1,28 @@
 # ComfyUI-Keyframed
 
 <!--ts-->
+* [ComfyUI-Keyframed](#comfyui-keyframed)
+* [Overview](#overview)
+* [Starter Workflows](#starter-workflows)
+   * [Prompt Scheduling](#prompt-scheduling)
+   * [Prompt Interleaving (aka Prompt Entanglement, aka Prompt Superposition)](#prompt-interleaving-aka-prompt-entanglement-aka-prompt-superposition)
+   * [Simple Curved Parameter](#simple-curved-parameter)
+   * [Multi-Prompt Transition With Manually Specified Curves](#multi-prompt-transition-with-manually-specified-curves)
+* [Nodes](#nodes)
+   * [Curve Constructors](#curve-constructors)
+      * [Curve From String](#curve-from-string)
+      * [Curve From YAML](#curve-from-yaml)
+      * [Constant-Valued Curve](#constant-valued-curve)
+      * [Entangled Curves](#entangled-curves)
+   * [Curve Operators](#curve-operators)
+      * [Evaluate Curve At T](#evaluate-curve-at-t)
+      * [Apply Curve To Conditioning](#apply-curve-to-conditioning)
+      * [Add Conditions](#add-conditions)
+      * [Curve Arithmetic Operators](#curve-arithmetic-operators)
+   * [Scheduling](#scheduling)
+      * [Keyframed Condition](#keyframed-condition)
+      * [Set Keyframe](#set-keyframe)
+      * [Evaluate Schedule](#evaluate-schedule)
 <!--te-->
 
 🚧 Work In Progress 🚧 - ComfyUI nodes to facilitate value keyframing by providing an interface for using [keyframed](https://github.com/dmarx/keyframed) in ComfyUI workflows.
