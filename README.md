@@ -92,16 +92,19 @@ If you're feeling adventurous, this workflow demonstrates how you would use the 
 
 ![Curve From String](assets/node_curve-from-string.png)
 
+Supports commonly used notation for curved parameter. See also Deforum, FizzNodes, https://www.chigozie.co.uk/keyframe-string-generator/
 
 ### Curve From YAML
 
 ![Curve From YAML](assets/node_curve-from-yaml.png)
 
+Supports curved parameter notation used by https://github.com/dmarx/keyframed
 
 ### Constant-Valued Curve
 
 ![Curve From YAML](assets/node_constant-valued-curve.png)
 
+Returns a curve which evaluates to the same value for all values of `t` (time). Especially useful for curve arithmetic.
 
 ### Entangled Curves
 
