@@ -149,6 +149,8 @@ Consider three time points `a,b,c` such that `a<b<c`, and two keyframes `X,Y` su
 
 ![Set Keyframe](assets/node_set-keyframe.png)
 
+Attaches a keyframe to a schedule. If you haven't created a schedule yet, pass your keyframe into this node to create one, then pass the output schedule to subsequent `Set Keyframe` nodes to attach additional keyframes to the schedule. The first keyframe in the schedule should always be at `time=0`.
+
 ### Evaluate Schedule
 
 ![Evaluate Schedule](assets/nodes_evaluate-schedule.png)
