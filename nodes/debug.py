@@ -3,6 +3,8 @@ import torch
 import numpy as np
 from PIL.Image import Image
 
+import keyframed as kf
+
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -36,6 +38,10 @@ def _inspect(item, depth=0):
     
     if isinstance(item, Image):
         logger.info(f"{pad}item.mode: {item.mode}")
+    
+    if isinstance(item, kf.ParameterGroup):
+        logger.info(f"{pad}item.parameters: {item.parameters}")
+
 
 
     # to do: be fancy and change to a match statement
@@ -145,6 +151,13 @@ class KfDebug_Segs(KfDebug_Passthrough):
 
 class KfDebug_Curve(KfDebug_Passthrough):
     RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+
+class KfDebug_PGroup(KfDebug_Passthrough):
+    RETURN_TYPES = ("PARAMETER_GROUP",)
+
+class KfDebug_Schedule(KfDebug_Passthrough):
+    RETURN_TYPES = ("SCHEDULE",)
 
 
 # ###########################

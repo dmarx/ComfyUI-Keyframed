@@ -70,6 +70,25 @@ label: foo"""
         return (curve,)
 
 
+class KfSetCurveLabel:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "label": ("STRING", {
+                    "multiline": False,
+                    "default": "~curve~"})}}
+    def main(self, curve, label):
+        curve = deepcopy(curve)
+        curve.label = label
+        return (curve,)
+
+
 class KfEvaluateCurveAtT:
     CATEGORY=CATEGORY # TODO: create a "utils" group
     FUNCTION = 'main'
@@ -251,21 +270,7 @@ class KfConditioningAddx10:
 #         return (curve,)
 
 
-class KfCurveDraw:
-    CATEGORY = f"{CATEGORY}/experimental"
-    FUNCTION = "main"
-    RETURN_TYPES = ("IMAGE",)
-
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "curve": ("KEYFRAMED_CURVE", {"forceInput": True,}),
-                "n": ("INT", {"default": 64}),
-            }
-        }
-
-    def main(self, curve, n):
+def plot_curve(curve, n):
         """
         
         """
@@ -293,20 +298,27 @@ class KfCurveDraw:
         for x in xs_base:
             xs.add(x)
             xs.add(x-eps)
-        
-        xs = [x for x in list(set(xs)) if (x >= 0)]
-        xs.sort()
-        ys = [curve[x] for x in xs]
 
         width, height = 12,8 #inches
-        plt.figure(figsize=(width, height))
-        #line = plt.plot(xs, ys, *args, **kargs)
-        line = plt.plot(xs, ys)
-        kfx = curve.keyframes
-        kfy = [curve[x] for x in kfx]
-        plt.scatter(kfx, kfy, color=line[0].get_color())
+        plt.figure(figsize=(width, height))        
 
+        xs = [x for x in list(set(xs)) if (x >= 0)]
+        xs.sort()
 
+        def draw_curve(curve):
+            ys = [curve[x] for x in xs]
+            #line = plt.plot(xs, ys, *args, **kargs)
+            line = plt.plot(xs, ys, label=curve.label)
+            kfx = curve.keyframes
+            kfy = [curve[x] for x in kfx]
+            plt.scatter(kfx, kfy, color=line[0].get_color())
+
+        if isinstance(curve, kf.ParameterGroup):
+            for c in curve.parameters.values():
+                draw_curve(c)
+        else:
+            draw_curve(curve)
+        plt.legend()
 
 
         #width, height = 10, 5 #inches
@@ -331,24 +343,43 @@ class KfCurveDraw:
         img_tensor = TT.ToTensor()(pil_image)
         img_tensor = img_tensor.unsqueeze(0)
         img_tensor = img_tensor.permute([0, 2, 3, 1])
+        return img_tensor
+
+class KfCurveDraw:
+    CATEGORY = f"{CATEGORY}/experimental"
+    FUNCTION = "main"
+    RETURN_TYPES = ("IMAGE",)
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE", {"forceInput": True,}),
+                "n": ("INT", {"default": 64}),
+            }
+        }
+
+    def main(self, curve, n):
+        img_tensor = plot_curve(curve, n)
         return (img_tensor,)
-        #return (plot_array,)
 
-#  buffer_io = BytesIO()
-#             plt.savefig(buffer_io, format='png', bbox_inches='tight')
-#             plt.close()
+class KfPGroupDraw:
+    CATEGORY = f"{CATEGORY}/experimental"
+    FUNCTION = "main"
+    RETURN_TYPES = ("IMAGE",)
 
-#             buffer_io.seek(0)
-#             img = Image.open(buffer_io)
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "parameter_group": ("PARAMETER_GROUP", {"forceInput": True,}),
+                "n": ("INT", {"default": 64}),
+            }
+        }
 
-#             img_tensor = TT.ToTensor()(img)
-        
-#             img_tensor = img_tensor.unsqueeze(0)
-            
-#             img_tensor = img_tensor.permute([0, 2, 3, 1])
-
-#             return (img_tensor,)
-
+    def main(self, parameter_group, n):
+        img_tensor = plot_curve(parameter_group, n)
+        return (img_tensor,)
 ###########################################
 
 # curve arithmetic
@@ -541,14 +572,57 @@ class KfCurveConstant:
 
 ### TODO: Working with parameter groups
 
-
-# Label curve
-## inputs: curve, label (text widget)
-
 # add curve(s) to parameter group
 ## inputs: pgroup, curve
 ## returns pgroup
 ## if pgroup not provided, new one created
+
+class KfAddCurveToPGroup:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    #RETURN_TYPES = ("KEYFRAMED_CURVE",)
+    RETURN_TYPES = ("PARAMETER_GROUP",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+            "optional": {
+                "parameter_group": ("PARAMETER_GROUP",{"forceInput": True,}),
+            },
+        }
+
+    def main(self, curve, parameter_group=None):
+        curve = deepcopy(curve)
+        if parameter_group is None:
+            #parameter_group = kf.ParameterGroup({curve.label:curve})
+            parameter_group = kf.ParameterGroup([curve])
+        else:
+            parameter_group = deepcopy(parameter_group)
+            parameter_group.parameters[curve.label] = curve
+        return (parameter_group,)
+
+
+class KfGetCurveFromPGroup:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve_label": ("STRING",{"default": "My Curve",}),
+                "parameter_group": ("PARAMETER_GROUP",{"forceInput": True,}),
+            },
+        }
+    
+    def main(self, curve_label, parameter_group):
+        curve = parameter_group.parameters[curve_label]
+        return (deepcopy(curve),)
+
 
 # get curve from parameter group
 ## inputs: pgroup, label
@@ -586,13 +660,19 @@ class KfCurveConstant:
 NODE_CLASS_MAPPINGS = {
     "KfCurveFromString": KfCurveFromString,
     "KfCurveFromYAML": KfCurveFromYAML,
+    "KfSetCurveLabel": KfSetCurveLabel,
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
     "KfApplyCurveToCond": KfApplyCurveToCond,
     "KfConditioningAdd": KfConditioningAdd,
+    #######################################
+    "KfAddCurveToPGroup": KfAddCurveToPGroup,
+    "KfGetCurveFromPGroup": KfGetCurveFromPGroup,
+    #######################################
     #"KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
     #######################################
     #"KfCurveInverse": KfCurveInverse,
     "KfCurveDraw": KfCurveDraw,
+    "KfPGroupDraw": KfPGroupDraw,
     "KfCurvesAdd": KfCurvesAdd,
     "KfCurvesSubtract": KfCurvesSubtract,
     "KfCurvesMultiply": KfCurvesMultiply,
@@ -618,4 +698,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KfCurvesMultiply": "Curve_1 * Curve_2",
     "KfCurvesDivide": "Curve_1 / Curve_2",
     "KfCurveConstant": "Constant-Valued Curve",
+    "KfSetCurveLabel": "Set Curve Label",
+    "KfAddCurveToPGroup": "Add Curve To Parameter Group",
+    "KfGetCurveFromPGroup": "Get Curve From Parameter Group",
 }
