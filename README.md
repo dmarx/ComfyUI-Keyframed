@@ -142,8 +142,13 @@ If you're using the `x10` node, at least `curve_0` must be non-empty. The other 
 
 ![Curve Arithmetic](assets/nodes_curve-arithmetic.png)
 
+Arithmetic is performed at the union of keyframes of the provided curves.
+
 NB: the division operator is unreliable at the time of this writing (2023-12-09).
 
+![Curve Arithmetic - batch pooling](assets/node_curve-arithmetic-x10.png)
+
+If you have lots of curve objects to multiply together or add together, here are some convenience nodes.
 
 ## Scheduling
 
