@@ -582,13 +582,34 @@ class KfAddCurveToPGroup:
             },
         }
 
-    def main(self, curve, parameter_group):
-        curve, parameter_group = deepcopy(curve), deepcopy(parameter_group)
-        parameter_group[curve.label] = curve
+    def main(self, curve, parameter_group=None):
+        curve = deepcopy(curve)
+        if parameter_group is None:
+            parameter_group = kf.ParameterGroup({curve.label:curve})
+        else:
+            parameter_group = deepcopy(parameter_group)
+            parameter_group.parameters[curve.label] = curve
         return (parameter_group,)
 
 
+class KfGetCurveFromPGroup:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve_label": ("STRING",{"default": "My Curve",}),
+                "parameter_group": ("PARAMETER_GROUP",{"forceInput": True,}),
+            },
+        }
     
+    def main(self, curve_label, parameter_group):
+        curve = parameter_group[curve_label]
+        return deepcopy(curve)
+
 
 # get curve from parameter group
 ## inputs: pgroup, label
@@ -630,6 +651,10 @@ NODE_CLASS_MAPPINGS = {
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
     "KfApplyCurveToCond": KfApplyCurveToCond,
     "KfConditioningAdd": KfConditioningAdd,
+    #######################################
+    "KfAddCurveToPGroup": KfAddCurveToPGroup,
+    "KfGetCurveFromPGroup": KfGetCurveFromPGroup,
+    #######################################
     #"KfCurveToAcnLatentKeyframe": KfCurveToAcnLatentKeyframe,
     #######################################
     #"KfCurveInverse": KfCurveInverse,
@@ -660,4 +685,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KfCurvesDivide": "Curve_1 / Curve_2",
     "KfCurveConstant": "Constant-Valued Curve",
     "KfSetCurveLabel": "Set Curve Label",
+    "KfAddCurveToPGroup": "Add Curve To Parameter Group",
+    "KfGetCurveFromPGroup": "Get Curve From Parameter Group",
 }
