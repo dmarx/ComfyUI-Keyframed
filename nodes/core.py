@@ -560,14 +560,35 @@ class KfCurveConstant:
 
 ### TODO: Working with parameter groups
 
-
-# Label curve
-## inputs: curve, label (text widget)
-
 # add curve(s) to parameter group
 ## inputs: pgroup, curve
 ## returns pgroup
 ## if pgroup not provided, new one created
+
+class KfAddCurveToPGroup:
+    CATEGORY = CATEGORY
+    FUNCTION = "main"
+    #RETURN_TYPES = ("KEYFRAMED_CURVE",)
+    RETURN_TYPES = ("PARAMETER_GROUP",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+            },
+            "optional": {
+                "parameter_group": ("PARAMETER_GROUP",{"forceInput": True,}),
+            },
+        }
+
+    def main(self, curve, parameter_group):
+        curve, parameter_group = deepcopy(curve), deepcopy(parameter_group)
+        parameter_group[curve.label] = curve
+        return (parameter_group,)
+
+
+    
 
 # get curve from parameter group
 ## inputs: pgroup, label
