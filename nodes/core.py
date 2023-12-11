@@ -9,6 +9,8 @@ import numpy as np
 import io
 from PIL import Image
 
+import torchvision.transforms as TT
+
 
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -224,11 +226,12 @@ class KfCurveDraw:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "curve": ("KEYFRAMED_CURVE",)
+                "curve": ("KEYFRAMED_CURVE", {"forceInput": True,}),
+                "n": ("INT", {"default": 64}),
             }
         }
 
-    def main(self, curve):
+    def main(self, curve, n):
         """
         
         """
@@ -238,25 +241,79 @@ class KfCurveDraw:
         # Build the plot using the provided function
         #build_plot(ax)
         #curve.plot(ax=ax)
-        curve.plot()
-        width, height = 10, 5 #inches
+        #curve.plot(n=n)
+
+        eps:float=1e-9
+        # value to be subtracted from keyframe to produce additional points for plotting.
+        # Plotting these additional values is important for e.g. visualizing step function behavior.
+
+        m=3
+        if n < m:
+            n = self.duration + 1
+            n = max(m, n)
+        
+        
+        xs_base = list(range(int(n))) + list(curve.keyframes)
+        logger.debug(f"xs_base:{xs_base}")
+        xs = set()
+        for x in xs_base:
+            xs.add(x)
+            xs.add(x-eps)
+        
+        xs = [x for x in list(set(xs)) if (x >= 0)]
+        xs.sort()
+        ys = [curve[x] for x in xs]
+
+        width, height = 12,8 #inches
         plt.figure(figsize=(width, height))
+        #line = plt.plot(xs, ys, *args, **kargs)
+        line = plt.plot(xs, ys)
+        kfx = curve.keyframes
+        kfy = [curve[x] for x in kfx]
+        plt.scatter(kfx, kfy, color=line[0].get_color())
+
+
+
+
+        #width, height = 10, 5 #inches
+        #plt.figure(figsize=(width, height))
 
         # Save the plot to a BytesIO object
         buf = io.BytesIO()
         plt.savefig(buf, format='png', bbox_inches='tight')
+        plt.close() # no idea if this makes a difference
         buf.seek(0)
 
         # Read the image into a numpy array, converting it to RGB mode
         pil_image = Image.open(buf).convert('RGB')
-        plot_array = np.array(pil_image) #.astype(np.uint8)
+        #plot_array = np.array(pil_image) #.astype(np.uint8)
 
         # Convert the array to the desired shape [batch, channels, width, height]
         #plot_array = np.transpose(plot_array, (2, 0, 1))  # Reorder to [channels, width, height]
         #plot_array = np.expand_dims(plot_array, axis=0)   # Add the batch dimension
         #plot_array = torch.tensor(plot_array) #.float()
-        plot_array = torch.from_numpy(plot_array)
-        return (plot_array,)
+        #plot_array = torch.from_numpy(plot_array)
+
+        img_tensor = TT.ToTensor()(pil_image)
+        img_tensor = img_tensor.unsqueeze(0)
+        img_tensor = img_tensor.permute([0, 2, 3, 1])
+        return (img_tensor,)
+        #return (plot_array,)
+
+#  buffer_io = BytesIO()
+#             plt.savefig(buffer_io, format='png', bbox_inches='tight')
+#             plt.close()
+
+#             buffer_io.seek(0)
+#             img = Image.open(buffer_io)
+
+#             img_tensor = TT.ToTensor()(img)
+        
+#             img_tensor = img_tensor.unsqueeze(0)
+            
+#             img_tensor = img_tensor.permute([0, 2, 3, 1])
+
+#             return (img_tensor,)
 
 ###########################################
 
