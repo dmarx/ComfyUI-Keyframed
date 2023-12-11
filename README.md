@@ -86,6 +86,15 @@ Workflow output: https://twitter.com/DigThatData/status/1733416414864957484
 
 If you're feeling adventurous, this workflow demonstrates how you would use the curve objects directly to acheive the same thing as a schedule. Each prompt gets its own seaparate curve indicating the weight of the prompt at that time (you probably want the various conditionings weights to sum to 1 when combined. If you need to "fill" missing conditioning weight, try using an empty prompt).
 
+## Parameter Groups and Curve Drawing Utilities
+
+![Parameter Groups and Curve Drawing Utilities](examples/pgroups-and-curve-drawing-utilities.png)
+
+Parameter Groups can be used to carry around multiple curves around. If you want to attach a curve to a parameter group, it will need a label.
+
+We provide utilities for drawing curves. You can draw multiple curves simultaneously by collecting them in a parameter group. The labels you give the curves will also be used as labels for plotting. You can also plot labels you haven't curves (a label was randomly generated when the curve was initialized).
+
+
 # Nodes
 
 ## Curve Constructors
