@@ -132,8 +132,11 @@ Generates a batch of `n` conditionings multiplying each conditioning by th value
 
 ### Add Conditions
 
-![Apply Curve To Conditioning](assets/node_add-conditions.png)
+![Add Conditions](assets/node_add-conditions.png)
 
+![Add Conditions (x10)](node_add-conditions-x10.png)
+
+If you're using the `x10` node, at least `curve_0` must be non-empty. The other cond positions are all optionally populated.
 
 ### Curve Arithmetic Operators
 
