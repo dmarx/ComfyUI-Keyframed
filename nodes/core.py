@@ -298,19 +298,26 @@ def plot_curve(curve, n):
         for x in xs_base:
             xs.add(x)
             xs.add(x-eps)
-        
-        xs = [x for x in list(set(xs)) if (x >= 0)]
-        xs.sort()
-        ys = [curve[x] for x in xs]
 
         width, height = 12,8 #inches
-        plt.figure(figsize=(width, height))
-        #line = plt.plot(xs, ys, *args, **kargs)
-        line = plt.plot(xs, ys)
-        kfx = curve.keyframes
-        kfy = [curve[x] for x in kfx]
-        plt.scatter(kfx, kfy, color=line[0].get_color())
+        plt.figure(figsize=(width, height))        
 
+        xs = [x for x in list(set(xs)) if (x >= 0)]
+        xs.sort()
+
+        def draw_curve(curve):
+            ys = [curve[x] for x in xs]
+            #line = plt.plot(xs, ys, *args, **kargs)
+            line = plt.plot(xs, ys)
+            kfx = curve.keyframes
+            kfy = [curve[x] for x in kfx]
+            plt.scatter(kfx, kfy, color=line[0].get_color())
+
+        if isinstance(curve, kf.ParameterGroup):
+            for c in curve.parameters.values():
+                draw_curve(c)
+        else:
+            draw_curve(curve)
 
 
 
@@ -356,21 +363,23 @@ class KfCurveDraw:
         img_tensor = plot_curve(curve, n)
         return (img_tensor,)
 
-#  buffer_io = BytesIO()
-#             plt.savefig(buffer_io, format='png', bbox_inches='tight')
-#             plt.close()
+class KfPGroupDraw:
+    CATEGORY = f"{CATEGORY}/experimental"
+    FUNCTION = "main"
+    RETURN_TYPES = ("IMAGE",)
 
-#             buffer_io.seek(0)
-#             img = Image.open(buffer_io)
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "parameter_group": ("PARAMETER_GROUP", {"forceInput": True,}),
+                "n": ("INT", {"default": 64}),
+            }
+        }
 
-#             img_tensor = TT.ToTensor()(img)
-        
-#             img_tensor = img_tensor.unsqueeze(0)
-            
-#             img_tensor = img_tensor.permute([0, 2, 3, 1])
-
-#             return (img_tensor,)
-
+    def main(self, parameter_group, n):
+        img_tensor = plot_curve(parameter_group, n)
+        return (img_tensor,)
 ###########################################
 
 # curve arithmetic
@@ -611,7 +620,7 @@ class KfGetCurveFromPGroup:
         }
     
     def main(self, curve_label, parameter_group):
-        curve = parameter_group[curve_label]
+        curve = parameter_group.parameters[curve_label]
         return deepcopy(curve)
 
 
@@ -663,6 +672,7 @@ NODE_CLASS_MAPPINGS = {
     #######################################
     #"KfCurveInverse": KfCurveInverse,
     "KfCurveDraw": KfCurveDraw,
+    "KfPGroupDraw": KfPGroupDraw,
     "KfCurvesAdd": KfCurvesAdd,
     "KfCurvesSubtract": KfCurvesSubtract,
     "KfCurvesMultiply": KfCurvesMultiply,
