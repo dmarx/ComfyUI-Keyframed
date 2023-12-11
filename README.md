@@ -15,6 +15,7 @@ Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
    * [AnimateDiff Prompt Superposition - Complex Workflow](#animatediff-prompt-superposition---complex-workflow)
    * [Simple Curved Parameter](#simple-curved-parameter)
    * [Multi-Prompt Transition With Manually Specified Curves](#multi-prompt-transition-with-manually-specified-curves)
+   * [Parameter Groups and Curve Drawing Utilities](#parameter-groups-and-curve-drawing-utilities)
 * [Nodes](#nodes)
    * [Curve Constructors](#curve-constructors)
       * [Curve From String](#curve-from-string)
