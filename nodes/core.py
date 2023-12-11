@@ -288,7 +288,7 @@ def plot_curve(curve, n):
 
         m=3
         if n < m:
-            n = self.duration + 1
+            n = curve.duration + 1
             n = max(m, n)
         
         
