@@ -680,7 +680,7 @@ class KfPGroupCurveAdd:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "parameter_group": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "parameter_group": ("PARAMETER_GROUP",{"forceInput": True,}),
                 "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
             },
         }
@@ -700,7 +700,7 @@ class KfPGroupCurveMultiply:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "parameter_group": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "parameter_group": ("PARAMETER_GROUP",{"forceInput": True,}),
                 "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
             },
         }
