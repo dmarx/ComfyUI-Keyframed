@@ -70,6 +70,25 @@ label: foo"""
         return (curve,)
 
 
+class KfSetCurveLabel:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
+    RETURN_TYPES = ("KEYFRAMED_CURVE",)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE",{"forceInput": True,}),
+                "label": ("STRING", {
+                    "multiline": False,
+                    "default": "~curve~"})}}
+    def main(self, curve, label):
+        curve = deepcopy(curve)
+        curve.label = label
+        return (curve,)
+
+
 class KfEvaluateCurveAtT:
     CATEGORY=CATEGORY # TODO: create a "utils" group
     FUNCTION = 'main'
@@ -586,6 +605,7 @@ class KfCurveConstant:
 NODE_CLASS_MAPPINGS = {
     "KfCurveFromString": KfCurveFromString,
     "KfCurveFromYAML": KfCurveFromYAML,
+    "KfSetCurveLabel": KfSetCurveLabel,
     "KfEvaluateCurveAtT": KfEvaluateCurveAtT,
     "KfApplyCurveToCond": KfApplyCurveToCond,
     "KfConditioningAdd": KfConditioningAdd,
@@ -618,4 +638,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KfCurvesMultiply": "Curve_1 * Curve_2",
     "KfCurvesDivide": "Curve_1 / Curve_2",
     "KfCurveConstant": "Constant-Valued Curve",
+    "KfSetCurveLabel": "Set Curve Label",
 }
