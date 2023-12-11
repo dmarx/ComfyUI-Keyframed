@@ -270,21 +270,7 @@ class KfConditioningAddx10:
 #         return (curve,)
 
 
-class KfCurveDraw:
-    CATEGORY = f"{CATEGORY}/experimental"
-    FUNCTION = "main"
-    RETURN_TYPES = ("IMAGE",)
-
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "curve": ("KEYFRAMED_CURVE", {"forceInput": True,}),
-                "n": ("INT", {"default": 64}),
-            }
-        }
-
-    def main(self, curve, n):
+def plot_curve(curve, n):
         """
         
         """
@@ -350,8 +336,25 @@ class KfCurveDraw:
         img_tensor = TT.ToTensor()(pil_image)
         img_tensor = img_tensor.unsqueeze(0)
         img_tensor = img_tensor.permute([0, 2, 3, 1])
+        return img_tensor
+
+class KfCurveDraw:
+    CATEGORY = f"{CATEGORY}/experimental"
+    FUNCTION = "main"
+    RETURN_TYPES = ("IMAGE",)
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "curve": ("KEYFRAMED_CURVE", {"forceInput": True,}),
+                "n": ("INT", {"default": 64}),
+            }
+        }
+
+    def main(self, curve, n):
+        img_tensor = plot_curve(curve, n)
         return (img_tensor,)
-        #return (plot_array,)
 
 #  buffer_io = BytesIO()
 #             plt.savefig(buffer_io, format='png', bbox_inches='tight')
@@ -585,7 +588,8 @@ class KfAddCurveToPGroup:
     def main(self, curve, parameter_group=None):
         curve = deepcopy(curve)
         if parameter_group is None:
-            parameter_group = kf.ParameterGroup({curve.label:curve})
+            #parameter_group = kf.ParameterGroup({curve.label:curve})
+            parameter_group = kf.ParameterGroup([curve])
         else:
             parameter_group = deepcopy(parameter_group)
             parameter_group.parameters[curve.label] = curve
