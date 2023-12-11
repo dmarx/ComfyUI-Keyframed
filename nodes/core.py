@@ -308,7 +308,7 @@ def plot_curve(curve, n):
         def draw_curve(curve):
             ys = [curve[x] for x in xs]
             #line = plt.plot(xs, ys, *args, **kargs)
-            line = plt.plot(xs, ys)
+            line = plt.plot(xs, ys, label=curve.label)
             kfx = curve.keyframes
             kfy = [curve[x] for x in kfx]
             plt.scatter(kfx, kfy, color=line[0].get_color())
@@ -318,7 +318,7 @@ def plot_curve(curve, n):
                 draw_curve(c)
         else:
             draw_curve(curve)
-
+        plt.legend()
 
 
         #width, height = 10, 5 #inches
@@ -621,7 +621,7 @@ class KfGetCurveFromPGroup:
     
     def main(self, curve_label, parameter_group):
         curve = parameter_group.parameters[curve_label]
-        return deepcopy(curve)
+        return (deepcopy(curve),)
 
 
 # get curve from parameter group
