@@ -306,7 +306,7 @@ class KfConditioningAddx10_alt:
 #         return (curve,)
 
 
-def plot_curve(curve, n, is_pgroup=False):
+def plot_curve(curve, n, show_legend, is_pgroup=False):
         """
         
         """
@@ -355,7 +355,8 @@ def plot_curve(curve, n, is_pgroup=False):
                 draw_curve(c)
         else:
             draw_curve(curve)
-        plt.legend()
+        if show_legend:
+            plt.legend()
 
 
         #width, height = 10, 5 #inches
@@ -393,11 +394,12 @@ class KfCurveDraw:
             "required": {
                 "curve": ("KEYFRAMED_CURVE", {"forceInput": True,}),
                 "n": ("INT", {"default": 64}),
+                "show_legend": ("BOOLEAN", {"default": True}),
             }
         }
 
-    def main(self, curve, n):
-        img_tensor = plot_curve(curve, n, is_pgroup=False)
+    def main(self, curve, n, show_legend):
+        img_tensor = plot_curve(curve, n, show_legend, is_pgroup=False)
         return (img_tensor,)
 
 class KfPGroupDraw:
@@ -411,11 +413,12 @@ class KfPGroupDraw:
             "required": {
                 "parameter_group": ("PARAMETER_GROUP", {"forceInput": True,}),
                 "n": ("INT", {"default": 64}),
+                "show_legend": ("BOOLEAN", {"default": True}),
             }
         }
 
-    def main(self, parameter_group, n):
-        img_tensor = plot_curve(parameter_group, n, is_pgroup=True)
+    def main(self, parameter_group, n, show_legend):
+        img_tensor = plot_curve(parameter_group, n, show_legend, is_pgroup=True)
         return (img_tensor,)
 ###########################################
 
