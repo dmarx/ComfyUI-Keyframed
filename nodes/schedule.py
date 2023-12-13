@@ -52,13 +52,43 @@ class KfKeyframedCondition:
         
         return ({"kf_cond_t":kf_cond_t, "kf_cond_pooled":kf_cond_pooled, "cond_dict":cond_dict},)
 
+
+def set_keyframed_condition(keyframed_condition, schedule=None):
+    keyframed_condition = deepcopy(keyframed_condition)
+    cond_dict = keyframed_condition.pop("cond_dict")
+    #cond_dict = deepcopy(cond_dict)
+
+    if schedule is None:
+        # get a new copy of the tensor
+        kf_cond_t = keyframed_condition["kf_cond_t"]
+        #kf_cond_t.value = kf_cond_t.value.clone() # should be redundant with the deepcopy
+        curve_tokenized = kf.Curve([kf_cond_t], label="kf_cond_t")
+        curves = [curve_tokenized]
+        if keyframed_condition["kf_cond_pooled"] is not None:
+            kf_cond_pooled = keyframed_condition["kf_cond_pooled"]
+            curve_pooled = kf.Curve([kf_cond_pooled], label="kf_cond_pooled")
+            curves.append(curve_pooled)
+        schedule = (kf.ParameterGroup(curves), cond_dict)
+    else:
+        schedule = deepcopy(schedule)
+        schedule, old_cond_dict = schedule
+        for k, v in keyframed_condition.items():
+            if (v is not None):
+                # for now, assume we already have a schedule for k.
+                # Not sure how to handle new conditioning type appearing.
+                schedule.parameters[k][v.t] = v
+        old_cond_dict.update(cond_dict) # NB: mutating this is probably bad
+        schedule = (schedule, old_cond_dict)
+    return schedule
+
+
 class KfKeyframedConditionWithText(KfKeyframedCondition):
     """
     Attaches a condition to a keyframe
     """
     CATEGORY=CATEGORY
     FUNCTION = 'main'
-    RETURN_TYPES = ("KEYFRAMED_CONDITION","CONDITIONING")
+    RETURN_TYPES = ("KEYFRAMED_CONDITION","CONDITIONING", "SCHEDULE")
 
     @classmethod
     def INPUT_TYPES(s):
@@ -75,15 +105,19 @@ class KfKeyframedConditionWithText(KfKeyframedCondition):
                 #"interpolation_method": (list(kf.interpolation.INTERPOLATORS.keys()),),
                 "interpolation_method": (list(kf.interpolation.EASINGS.keys()), {"default":"linear"}),
             },
+            "optional": {
+                "schedule": ("SCHEDULE", {}), 
+            }
         }
     
     #def main(self, conditioning, time, interpolation_method):
-    def main(self, clip, text, time, interpolation_method):
+    def main(self, clip, text, time, interpolation_method, schedule=None):
         tokens = clip.tokenize(text)
         cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
         conditioning =  [[cond, {"pooled_output": pooled}]]
-        outv = super().main(conditioning, time, interpolation_method)
-        return (outv[0], conditioning)
+        keyframed_condition = super().main(conditioning, time, interpolation_method)[0]
+        schedule = set_keyframed_condition(keyframed_condition, schedule)
+        return (keyframed_condition, conditioning, schedule)
 
 
 class KfSetKeyframe:
@@ -102,31 +136,7 @@ class KfSetKeyframe:
             }
         }
     def main(self, keyframed_condition, schedule=None):
-        keyframed_condition = deepcopy(keyframed_condition)
-        cond_dict = keyframed_condition.pop("cond_dict")
-        #cond_dict = deepcopy(cond_dict)
-
-        if schedule is None:
-            # get a new copy of the tensor
-            kf_cond_t = keyframed_condition["kf_cond_t"]
-            #kf_cond_t.value = kf_cond_t.value.clone() # should be redundant with the deepcopy
-            curve_tokenized = kf.Curve([kf_cond_t], label="kf_cond_t")
-            curves = [curve_tokenized]
-            if keyframed_condition["kf_cond_pooled"] is not None:
-                kf_cond_pooled = keyframed_condition["kf_cond_pooled"]
-                curve_pooled = kf.Curve([kf_cond_pooled], label="kf_cond_pooled")
-                curves.append(curve_pooled)
-            schedule = (kf.ParameterGroup(curves), cond_dict)
-        else:
-            schedule = deepcopy(schedule)
-            schedule, old_cond_dict = schedule
-            for k, v in keyframed_condition.items():
-                if (v is not None):
-                    # for now, assume we already have a schedule for k.
-                    # Not sure how to handle new conditioning type appearing.
-                    schedule.parameters[k][v.t] = v
-            old_cond_dict.update(cond_dict) # NB: mutating this is probably bad
-            schedule = (schedule, old_cond_dict)
+        schedule = set_keyframed_condition(keyframed_condition, schedule)
         return (schedule,)
 
 
@@ -207,7 +217,7 @@ NODE_CLASS_MAPPINGS = {
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KfKeyframedCondition": "Keyframed Condition",
-    "KfKeyframedConditionWithText": "Keyframed Condition (Prompt)",
+    "KfKeyframedConditionWithText": "Schedule Prompt",
     "KfSetKeyframe": "Set Keyframe",
     "KfGetScheduleConditionAtTime": "Evaluate Schedule At T",
     "KfGetScheduleConditionSlice": "Evaluate Schedule At T (Batch)",
