@@ -27,9 +27,10 @@ class KfKeyframedCondition:
         return {
             "required": {
                 "conditioning": ("CONDITIONING", {}),
-                "time": ("FLOAT", {"default": 0}), 
+                "time": ("FLOAT", {"default": 0, "step": 1}), 
                 #"weight": ("FLOAT", {"default": 1}), # maybe i should hide this attribute
-                "interpolation_method": (list(kf.interpolation.INTERPOLATORS.keys()),),
+                #"interpolation_method": (list(kf.interpolation.INTERPOLATORS.keys()),),
+                "interpolation_method": (list(kf.interpolation.EASINGS.keys()), {"default":"linear"}),
             },
         }
     
@@ -50,6 +51,39 @@ class KfKeyframedCondition:
             cond_dict["pooled_output"] = cond_pooled
         
         return ({"kf_cond_t":kf_cond_t, "kf_cond_pooled":kf_cond_pooled, "cond_dict":cond_dict},)
+
+class KfKeyframedConditionWithText(KfKeyframedCondition):
+    """
+    Attaches a condition to a keyframe
+    """
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
+    RETURN_TYPES = ("KEYFRAMED_CONDITION","CONDITIONING")
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                #"conditioning": ("CONDITIONING", {}),
+                "clip": ("CLIP",),
+                "text": ("STRING", {
+                    "multiline": True,
+                    "default": ""
+                }),
+                "time": ("FLOAT", {"default": 0, "step": 1}), 
+                #"weight": ("FLOAT", {"default": 1}), # maybe i should hide this attribute
+                #"interpolation_method": (list(kf.interpolation.INTERPOLATORS.keys()),),
+                "interpolation_method": (list(kf.interpolation.EASINGS.keys()), {"default":"linear"}),
+            },
+        }
+    
+    #def main(self, conditioning, time, interpolation_method):
+    def main(self, clip, text, time, interpolation_method):
+        tokens = clip.tokenize(text)
+        cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
+        conditioning =  [[cond, {"pooled_output": pooled}]]
+        outv = super().main(conditioning, time, interpolation_method)
+        return (outv[0], conditioning)
 
 
 class KfSetKeyframe:
@@ -165,6 +199,7 @@ class KfGetScheduleConditionSlice:
 
 NODE_CLASS_MAPPINGS = {
     "KfKeyframedCondition": KfKeyframedCondition,
+    "KfKeyframedConditionWithText":KfKeyframedConditionWithText,
     "KfSetKeyframe": KfSetKeyframe,
     "KfGetScheduleConditionAtTime": KfGetScheduleConditionAtTime,
     "KfGetScheduleConditionSlice": KfGetScheduleConditionSlice,
@@ -172,6 +207,7 @@ NODE_CLASS_MAPPINGS = {
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KfKeyframedCondition": "Keyframed Condition",
+    "KfKeyframedConditionWithText": "Keyframed Condition (Prompt)",
     "KfSetKeyframe": "Set Keyframe",
     "KfGetScheduleConditionAtTime": "Evaluate Schedule At T",
     "KfGetScheduleConditionSlice": "Evaluate Schedule At T (Batch)",
