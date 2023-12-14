@@ -24,6 +24,7 @@ def is_installed(package, package_overwrite=None):
 
 # to do: read from requirements.txt
 is_installed("keyframed")
+is_installed("toolz")
 
 from .nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
 
