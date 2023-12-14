@@ -22,3 +22,5 @@ NODE_DISPLAY_NAME_MAPPINGS.update(ndnm4)
 
 
 __all__ =["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
+
+# TODO: ensure installed: keyframed toolz

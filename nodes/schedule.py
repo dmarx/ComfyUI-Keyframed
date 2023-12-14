@@ -116,6 +116,7 @@ class KfKeyframedConditionWithText(KfKeyframedCondition):
         cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
         conditioning =  [[cond, {"pooled_output": pooled}]]
         keyframed_condition = super().main(conditioning, time, interpolation_method)[0]
+        keyframed_condition["kf_cond_t"].label = text # attach prompt string as a label to the xattn keyframe for drawing
         schedule = set_keyframed_condition(keyframed_condition, schedule)
         return (keyframed_condition, conditioning, schedule)
 
@@ -207,12 +208,73 @@ class KfGetScheduleConditionSlice:
 
 ###################################################################
 
+from toolz.itertoolz import sliding_window
+
+def schedule_to_weight_curves(schedule):
+    """
+    Given a keyfrmaed curve, returns a curve for each keyframe giving the contribution
+    of that keyframe to the schedule. Motivation here is to facilitate plotting
+    """
+    schedule, _ = schedule
+    schedule = schedule.parameters["kf_cond_t"]
+    schedule = deepcopy(schedule)
+    curves = []
+    keyframes = list(schedule._data.values())
+    if len(keyframes) == 1:
+        keyframe = keyframes[0]
+        #curves = kf.ParameterGroup({kf.label: 1})
+        curves = kf.ParameterGroup({keyframe.label: keyframe.Curve(1)})
+        return curves
+    for (frame_in, frame_curr, frame_out) in sliding_window(3, keyframes):
+        frame_in.value, frame_curr.value, frame_out.value = 0,1,0
+        c = kf.Curve({frame_in.t:frame_in, frame_curr.t:frame_curr, frame_out.t:frame_out}, 
+                     label=frame_curr.label)
+        c = deepcopy(c)
+        curves.append(c)
+    begin, end = keyframes[:2], keyframes[-2:]
+    #outv = [begin]
+    begin[0].value = 1
+    begin[1].value = 0
+    end[0].value = 0
+    end[1].value = 1
+    outv = [kf.Curve(begin, label=begin[0].label)]
+    if len(keyframes) == 2:
+        return outv
+    outv += curves
+    outv += [kf.Curve(end, label=end[1].label)]
+    return kf.ParameterGroup(outv)
+
+from .core import plot_curve
+
+class KfDrawSchedule:
+    CATEGORY=CATEGORY
+    FUNCTION = 'main'
+    RETURN_TYPES = ("IMAGE",)
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "schedule": ("SCHEDULE", {"forceInput": True,}),
+                "n": ("INT", {"default": 64}),
+                "show_legend": ("BOOLEAN", {"default": True}),
+            }
+        }
+
+    def main(self, schedule, n, show_legend):
+        curves = schedule_to_weight_curves(schedule)
+        img_tensor = plot_curve(curves, n, show_legend, is_pgroup=True)
+        return (img_tensor,)
+
+###################################################################
+
 NODE_CLASS_MAPPINGS = {
     "KfKeyframedCondition": KfKeyframedCondition,
     "KfKeyframedConditionWithText":KfKeyframedConditionWithText,
     "KfSetKeyframe": KfSetKeyframe,
     "KfGetScheduleConditionAtTime": KfGetScheduleConditionAtTime,
     "KfGetScheduleConditionSlice": KfGetScheduleConditionSlice,
+    "KfDrawSchedule": KfDrawSchedule,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
