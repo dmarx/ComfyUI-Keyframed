@@ -37,13 +37,18 @@ Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
 
 # Overview
 
-**Philosophy**
+The nodes in this extension support parameterizing animations whose prompts or other settings will change over time. Other systems for achieving this currently exist in the ComfyUI and AI art ecosystem which rely heavily on notation. The motivation of this extension is to take full advantage of ComfyUI's node system for manipulating "keyframed" parameters like this, hopefully making this kind of work accessible to people who may otherwise be intimidated or constrained by the notation systems currently in use.
 
-* Treat curves/schedules and keyframes as objects that can be passed around, plugged and unplugged, interchanged, and manipulated atomically.
-* Leverage nodes to facilitate modularity and flexibility.
-* Facilitate fast iteration
-* Provide convenience functions for most common use cases, and also low-leverl operators capable of reproducing the behavior of those convenience functions to permit user customization in "node space".
+The nodes here are mostly wrappers around the python library [keyframed](https://github.com/dmarx/keyframed). The main objects we inherit from `keyframed` are:
 
+* `Keyframe` - Combination of a timestamp, a value, an interpolation method, and an optional label. 
+* `Curve` - A sequence of keyframes. When querying a curve at a `time` that doesn't exactly map to a keyframe, the curve will look at the previous keyframe to determine the interpolation method for how to interpolate between it and the next keyframe. Curves support basic arithmetic, i.e. you can do `newcurve = myCurve * 2`, and also support arithmetic against other curves. Division is currently broken.
+* `ParameterGroup` - A collection of `Curve` objects that can be worked with as a unit. 
+
+These nodes introduce two additional objects to facilitate working with prompts
+
+* `Keyframed Condition` - a keyframe whose value is a `conditioning`. ComfyUI conditionings are weird.
+* `Schedule` - A curve comprised of keyframed conditions. Under the hood, this is actually a parametergroup that carries around two curves: one for the "cross-attention" conditioning tensor, and one for the "pooled-output" conditioning tensor. 
 
 # Starter Workflows
 
