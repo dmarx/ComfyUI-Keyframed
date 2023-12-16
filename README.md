@@ -27,6 +27,7 @@ Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
       * [Add Conditions](#add-conditions)
       * [Curve Arithmetic Operators](#curve-arithmetic-operators)
    * [Scheduling](#scheduling)
+      * [Schedule Prompt](#schedule-prompt)
       * [Keyframed Condition](#keyframed-condition)
          * [Interpolation Methods](#interpolation-methods)
       * [Set Keyframe](#set-keyframe)
