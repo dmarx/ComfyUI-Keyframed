@@ -54,13 +54,18 @@ see also: [`Nodes > Scheduling`](https://github.com/dmarx/ComfyUI-Keyframed/blob
 ![Prompt Scheduling](examples/prompt-scheduling.png)
 -->
 
-![Prompt Scheduling](examples/prompt-scheduling_ezmode.png)
+![Prompt Scheduling](examples/prompt-schedule-minimal-ad.png)
 
  This one is probably why you are here. This workflow demonstrates how to use the `keyframed/schedule` nodes to achieve similar behavior as [FizzNodes'](https://github.com/FizzleDorf/ComfyUI_FizzNodes) **PromptSchedule** node, but implemented differently.
 
 This schedule is essentailly a normal AnimateDiff workflow where several nodes have replaced the normal conditioning setup. Rather than a single `CLIP Text Encode` node, we can have multiple prompts which transition sequentially over time. 
 
-The workflow above illustrations the most user-friendly interface, but there are nodes for lower level interfaces as well:
+Here's a more fully worked version of the workflow above (adds a second refinement pass of AnimateDiff, FiLM VFI, and upscaling).
+
+![Prompt Scheduling](examples/prompt-scheduling_ezmode.png)
+
+
+These workflows illustrate the most user-friendly prompt-scheduling interface, but there are "lower-level" nodes as well for more complex bespoke scheduling.
 
 ![Prompt Scheduling](examples/prompt-scheduling_old.png)
 
