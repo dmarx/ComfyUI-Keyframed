@@ -91,6 +91,7 @@ For documentation detailing how this workflow works, see the [`Nodes > Entangled
 
 ![Simple Curved Parameter](examples/simple-curved-parameter.png)
 
+In this example we ilustrate how arithmetic can be performed on curves. Curves also support arithmetic operations against floats and ints, e.g. `myCurve * 3`.
 
 ## Multi-Prompt Transition With Manually Specified Curves
 
@@ -173,7 +174,7 @@ If you have lots of curve objects to multiply together or add together, here are
 
 ## Scheduling
 
-These nodes work together to facilitate transitioning through a sequence of conditionings (i.e. prompts). We'll call this sequence the "schedule" of the conditionings. The primary use case here is for manipulating the positive prompt, i.e. for building a "prompt schedule". Given a particular time (e.g. frame id) in an animation seuquence, we can query the prompt schedule at that time to get the appropriate conditioning to pass to the KSampler. 
+These nodes work together to facilitate transitioning through a sequence of conditionings (i.e. prompts). We'll call this sequence the "schedule" of the conditionings. The primary use case here is for manipulating the positive prompt, i.e. for building a "prompt schedule". Given a particular time (e.g. frame id) in an animation sequence, we can query the prompt schedule at that time to get the appropriate conditioning to pass to the KSampler. 
 
 Reference the [Prompt Scheduling Workflow](https://github.com/dmarx/ComfyUI-Keyframed/tree/dev?tab=readme-ov-file#prompt-scheduling) for a demonstrative example
 
