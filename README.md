@@ -183,6 +183,13 @@ These nodes work together to facilitate transitioning through a sequence of cond
 
 Reference the [Prompt Scheduling Workflow](https://github.com/dmarx/ComfyUI-Keyframed/tree/dev?tab=readme-ov-file#prompt-scheduling) for a demonstrative example
 
+### Schedule Prompt
+
+![Schedule Prompt](assets/node_schedule-prompt.png)
+
+This will be the "workhorse" node provided by this package for the majority of people. It combines the nodes `CLIPTextEncode`, `Keyframed Condition`, and `Set Keyframe` (the latter two described below). It offers three outputs, but you will generally only need the `SCHEDULE` output. If an input `schedule` is not provided, a new `SCHEDULE` object will be created and provided at the output, which you can then pass to subsequent `Schedule Prompt` nodes to add keyframed conditions to the same schedule.
+
+
 ### Keyframed Condition
 
 ![Keyframed Condition](assets/node_keyframed-condition.png)
