@@ -12,7 +12,6 @@ Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
 * [Starter Workflows](#starter-workflows)
    * [Prompt Scheduling](#prompt-scheduling)
    * [Interleaving Multiple Prompts Simultaneously (aka Prompt Entanglement, aka Prompt Superposition)](#interleaving-multiple-prompts-simultaneously-aka-prompt-entanglement-aka-prompt-superposition)
-   * [AnimateDiff Prompt Superposition - Complex Workflow](#animatediff-prompt-superposition---complex-workflow)
    * [Simple Curved Parameter](#simple-curved-parameter)
    * [Multi-Prompt Transition With Manually Specified Curves](#multi-prompt-transition-with-manually-specified-curves)
    * [Parameter Groups and Curve Drawing Utilities](#parameter-groups-and-curve-drawing-utilities)
@@ -28,6 +27,7 @@ Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
       * [Add Conditions](#add-conditions)
       * [Curve Arithmetic Operators](#curve-arithmetic-operators)
    * [Scheduling](#scheduling)
+      * [Schedule Prompt](#schedule-prompt)
       * [Keyframed Condition](#keyframed-condition)
          * [Interpolation Methods](#interpolation-methods)
       * [Set Keyframe](#set-keyframe)
@@ -37,13 +37,18 @@ Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
 
 # Overview
 
-**Philosophy**
+The nodes in this extension support parameterizing animations whose prompts or other settings will change over time. Other systems for achieving this currently exist in the ComfyUI and AI art ecosystem which rely heavily on notation. The motivation of this extension is to take full advantage of ComfyUI's node system for manipulating "keyframed" parameters like this, hopefully making this kind of work accessible to people who may otherwise be intimidated or constrained by the notation systems currently in use.
 
-* Treat curves/schedules and keyframes as objects that can be passed around, plugged and unplugged, interchanged, and manipulated atomically.
-* Leverage nodes to facilitate modularity and flexibility.
-* Facilitate fast iteration
-* Provide convenience functions for most common use cases, and also low-leverl operators capable of reproducing the behavior of those convenience functions to permit user customization in "node space".
+The nodes here are mostly wrappers around the python library [keyframed](https://github.com/dmarx/keyframed). The main objects we inherit from `keyframed` are:
 
+* `Keyframe` - Combination of a timestamp, a value, an interpolation method, and an optional label. 
+* `Curve` - A sequence of keyframes. When querying a curve at a `time` that doesn't exactly map to a keyframe, the curve will look at the previous keyframe to determine the interpolation method for how to interpolate between it and the next keyframe. Curves support basic arithmetic, i.e. you can do `newcurve = myCurve * 2`, and also support arithmetic against other curves. Division is currently broken.
+* `ParameterGroup` - A collection of `Curve` objects that can be worked with as a unit. 
+
+These nodes introduce two additional objects to facilitate working with prompts
+
+* `Keyframed Condition` - a keyframe whose value is a `conditioning`. ComfyUI conditionings are weird.
+* `Schedule` - A curve comprised of keyframed conditions. Under the hood, this is actually a parametergroup that carries around two curves: one for the "cross-attention" conditioning tensor, and one for the "pooled-output" conditioning tensor. 
 
 # Starter Workflows
 
@@ -55,42 +60,49 @@ see also: [`Nodes > Scheduling`](https://github.com/dmarx/ComfyUI-Keyframed/blob
 ![Prompt Scheduling](examples/prompt-scheduling.png)
 -->
 
-![Prompt Scheduling](examples/prompt-scheduling_ezmode.png)
+![Prompt Scheduling](examples/prompt-schedule-minimal-ad.png)
 
  This one is probably why you are here. This workflow demonstrates how to use the `keyframed/schedule` nodes to achieve similar behavior as [FizzNodes'](https://github.com/FizzleDorf/ComfyUI_FizzNodes) **PromptSchedule** node, but implemented differently.
 
 This schedule is essentailly a normal AnimateDiff workflow where several nodes have replaced the normal conditioning setup. Rather than a single `CLIP Text Encode` node, we can have multiple prompts which transition sequentially over time. 
 
-The workflow above illustrations the most user-friendly interface, but there are nodes for lower level interfaces as well:
+Here's a more fully worked version of the workflow above (adds a second refinement pass of AnimateDiff, FiLM VFI, and upscaling).
+
+![Prompt Scheduling](examples/prompt-scheduling_ezmode.png)
+
+
+These workflows illustrate the most user-friendly prompt-scheduling interface, but there are "lower-level" nodes as well for more complex bespoke scheduling.
 
 ![Prompt Scheduling](examples/prompt-scheduling_old.png)
 
 
 ## Interleaving Multiple Prompts Simultaneously (aka Prompt Entanglement, aka Prompt Superposition)
 
-![Prompt Entanglement](examples/prompt-entanglement.png)
-
-Which is the node equivalent for achieving this type of thing
-
-![](https://pbs.twimg.com/media/Fqcdhe4agAEnJ-L?format=jpg&name=large)
-
-For documentation detailing how this workflow works, see the [`Nodes > Entangled Curves`](https://github.com/dmarx/ComfyUI-Keyframed?tab=readme-ov-file#entangled-curves) section below.
-
-## AnimateDiff Prompt Superposition - Complex Workflow
-
-![Prompt Entanglement](examples/8x-interleaved-prompts_2phase-ad_loop-friendly-vfi_upscale.png)
+![Prompt Entanglement](examples/6x-interleaved-prompts_2phase-ad_loop-friendly-VFI_upscaling.png)
 
 Workflow output: https://twitter.com/DigThatData/status/1733416414864957484
 
-* 8x Prompt superposition
+Workflow features:
+
+* 6x Prompt superposition
 * Second pass of AnimateDiff with denoise reduced to serve as a "refinement pass"
 * FiLM Video Frame Interpolation (VFI) modified to interpolate looping videos correctly
 * ESRGAN 2x Upscaling
+
+The "Nx Entangled Curves" nodes generate N sinusoidal curves whose phases are offset to be equally spaced and whose amplitudes are adjusted such that the sum of all curves at any time is 1. 
+
+![Prompt Entanglement](examples/6x-entangled-curves-plot.png)
+
+This can be used to create a "prompt superposition" effect, where all prompts contribute at any given time, and their relative strengths varies throughout the animation, each taking turns being the strongest or weakest contributor to the conditioning. This differs from the "prompt scheduling" workflow above, where at most two prompts are active at any given time (i.e. during transitions between keyframes).
+
+For documentation detailing how this workflow works, see the [`Nodes > Entangled Curves`](https://github.com/dmarx/ComfyUI-Keyframed?tab=readme-ov-file#entangled-curves) section below.
+
 
 ## Simple Curved Parameter
 
 ![Simple Curved Parameter](examples/simple-curved-parameter.png)
 
+In this example we ilustrate how arithmetic can be performed on curves. Curves also support arithmetic operations against floats and ints, e.g. `myCurve * 3`.
 
 ## Multi-Prompt Transition With Manually Specified Curves
 
@@ -173,9 +185,16 @@ If you have lots of curve objects to multiply together or add together, here are
 
 ## Scheduling
 
-These nodes work together to facilitate transitioning through a sequence of conditionings (i.e. prompts). We'll call this sequence the "schedule" of the conditionings. The primary use case here is for manipulating the positive prompt, i.e. for building a "prompt schedule". Given a particular time (e.g. frame id) in an animation seuquence, we can query the prompt schedule at that time to get the appropriate conditioning to pass to the KSampler. 
+These nodes work together to facilitate transitioning through a sequence of conditionings (i.e. prompts). We'll call this sequence the "schedule" of the conditionings. The primary use case here is for manipulating the positive prompt, i.e. for building a "prompt schedule". Given a particular time (e.g. frame id) in an animation sequence, we can query the prompt schedule at that time to get the appropriate conditioning to pass to the KSampler. 
 
 Reference the [Prompt Scheduling Workflow](https://github.com/dmarx/ComfyUI-Keyframed/tree/dev?tab=readme-ov-file#prompt-scheduling) for a demonstrative example
+
+### Schedule Prompt
+
+![Schedule Prompt](assets/node_schedule-prompt.png)
+
+This will be the "workhorse" node provided by this package for the majority of people. It combines the nodes `CLIPTextEncode`, `Keyframed Condition`, and `Set Keyframe` (the latter two described below). It offers three outputs, but you will generally only need the `SCHEDULE` output. If an input `schedule` is not provided, a new `SCHEDULE` object will be created and provided at the output, which you can then pass to subsequent `Schedule Prompt` nodes to add keyframed conditions to the same schedule.
+
 
 ### Keyframed Condition
 
