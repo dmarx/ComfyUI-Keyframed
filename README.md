@@ -68,7 +68,7 @@ The workflow above illustrations the most user-friendly interface, but there are
 
 ## Interleaving Multiple Prompts Simultaneously (aka Prompt Entanglement, aka Prompt Superposition)
 
-![Prompt Entanglement](examples/6x-interleaved-prompts_2phase-ad_loop-friendly-vfi_upscale.png)
+![Prompt Entanglement](examples/6x-interleaved-prompts_2phase-ad_loop-friendly-VFI_upscaling.png)
 
 Workflow output: https://twitter.com/DigThatData/status/1733416414864957484
 
