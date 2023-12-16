@@ -12,7 +12,6 @@ Related project: https://github.com/FizzleDorf/ComfyUI_FizzNodes
 * [Starter Workflows](#starter-workflows)
    * [Prompt Scheduling](#prompt-scheduling)
    * [Interleaving Multiple Prompts Simultaneously (aka Prompt Entanglement, aka Prompt Superposition)](#interleaving-multiple-prompts-simultaneously-aka-prompt-entanglement-aka-prompt-superposition)
-   * [AnimateDiff Prompt Superposition - Complex Workflow](#animatediff-prompt-superposition---complex-workflow)
    * [Simple Curved Parameter](#simple-curved-parameter)
    * [Multi-Prompt Transition With Manually Specified Curves](#multi-prompt-transition-with-manually-specified-curves)
    * [Parameter Groups and Curve Drawing Utilities](#parameter-groups-and-curve-drawing-utilities)
