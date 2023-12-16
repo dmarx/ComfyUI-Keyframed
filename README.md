@@ -68,24 +68,25 @@ The workflow above illustrations the most user-friendly interface, but there are
 
 ## Interleaving Multiple Prompts Simultaneously (aka Prompt Entanglement, aka Prompt Superposition)
 
-![Prompt Entanglement](examples/prompt-entanglement.png)
-
-Which is the node equivalent for achieving this type of thing
-
-![](https://pbs.twimg.com/media/Fqcdhe4agAEnJ-L?format=jpg&name=large)
-
-For documentation detailing how this workflow works, see the [`Nodes > Entangled Curves`](https://github.com/dmarx/ComfyUI-Keyframed?tab=readme-ov-file#entangled-curves) section below.
-
-## AnimateDiff Prompt Superposition - Complex Workflow
-
-![Prompt Entanglement](examples/8x-interleaved-prompts_2phase-ad_loop-friendly-vfi_upscale.png)
+![Prompt Entanglement](examples/6x-interleaved-prompts_2phase-ad_loop-friendly-vfi_upscale.png)
 
 Workflow output: https://twitter.com/DigThatData/status/1733416414864957484
 
-* 8x Prompt superposition
+Workflow features:
+
+* 6x Prompt superposition
 * Second pass of AnimateDiff with denoise reduced to serve as a "refinement pass"
 * FiLM Video Frame Interpolation (VFI) modified to interpolate looping videos correctly
 * ESRGAN 2x Upscaling
+
+The "Nx Entangled Curves" nodes generate N sinusoidal curves whose phases are offset to be equally spaced and whose amplitudes are adjusted such that the sum of all curves at any time is 1. 
+
+![Prompt Entanglement](examples/6x-entangled-curves-plot.png)
+
+This can be used to create a "prompt superposition" effect, where all prompts contribute at any given time, and their relative strengths varies throughout the animation, each taking turns being the strongest or weakest contributor to the conditioning. This differs from the "prompt scheduling" workflow above, where at most two prompts are active at any given time (i.e. during transitions between keyframes).
+
+For documentation detailing how this workflow works, see the [`Nodes > Entangled Curves`](https://github.com/dmarx/ComfyUI-Keyframed?tab=readme-ov-file#entangled-curves) section below.
+
 
 ## Simple Curved Parameter
 
