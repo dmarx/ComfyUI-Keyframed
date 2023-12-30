@@ -163,9 +163,9 @@ class KfPGroupSum:
         return (outv,)
         #return (curve,)
 
-
-class KfPGroupProd:
-    pass
+### broken
+#class KfPGroupProd:
+#    pass
 #     CATEGORY = CATEGORY
 #     FUNCTION = "main"
 #     RETURN_TYPES = ("KEYFRAMED_CURVE",)
@@ -195,7 +195,7 @@ NODE_CLASS_MAPPINGS = {
     "KfPGroupCurveAdd":KfPGroupCurveAdd,
     "KfPGroupCurveMultiply":KfPGroupCurveMultiply,
     "KfPGroupSum": KfPGroupSum,
-    "KfPGroupProd": KfPGroupProd,
+    #"KfPGroupProd": KfPGroupProd,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
@@ -207,5 +207,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KfPGroupCurveAdd": "Parameter Group + Curve (addition)",
     "KfPGroupCurveMultiply": "Parameter Group * Curve (multiply)",
     "KfPGroupSum": "Sum Over Parameter Group",
-    "KfPGroupProd": "Product Over Parameter Group",
+    #"KfPGroupProd": "Product Over Parameter Group",
 }
