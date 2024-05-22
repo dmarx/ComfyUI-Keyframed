@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-keyframed"
+description = "ComfyUI nodes to facilitate parameter/prompt keyframing using comfyui nodes for defining and manipulating parameter curves. Essentially provides a ComfyUI interface to the [a/keyframed](https://github.com/dmarx/keyframed) library."
+version = "1.0.0"
+license = "LICENSE"
+dependencies = ["keyframed"]
+
+[project.urls]
+Repository = "https://github.com/dmarx/ComfyUI-Keyframed"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-Keyframed"
+Icon = ""
